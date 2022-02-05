@@ -1,27 +1,30 @@
 package com.noelh.paymybuddy.model;
 
-import lombok.Data;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @Entity
-@Data
-public class UserMoneyTransaction {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    private LocalDateTime date;
-
-    private double amount;
-
-    private double taxAmount;
+public class UserMoneyTransaction extends MoneyTransaction{
 
     @OneToOne
     private UserAccount sender;
 
     @OneToOne
     private UserAccount receiver;
+
+    public UserAccount getSender() {
+        return sender;
+    }
+
+    public void setSender(UserAccount sender) {
+        this.sender = sender;
+    }
+
+    public UserAccount getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(UserAccount receiver) {
+        this.receiver = receiver;
+    }
 }
