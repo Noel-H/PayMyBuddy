@@ -6,13 +6,11 @@ import javax.persistence.*;
 
 @Entity
 @Data
-public class BankAccount {
+public class Friend {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,
-            unique = true)
-    private String iban;
+    private String friendLoginMail;
 }

@@ -1,86 +1,38 @@
 package com.noelh.paymybuddy.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Data
 public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private String login;
+    @Column(nullable = false,
+            unique = true)
+    private String loginMail;
 
+    @Column(nullable = false)
     private String password;
 
-    private double balance;
+    @Column(nullable = false)
+    private Double balance;
 
     @OneToMany
-    private List<UserAccount> friendList;
+    private List<Friend> friendList;
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany
     private List<BankAccount> bankAccountList;
 
     @OneToMany
-    private List<MoneyTransaction> moneyTransactionList;
+    private List<MoneyTransactionWithBankAccount> moneyTransactionWithBankAccountList;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public List<UserAccount> getFriendList() {
-        return friendList;
-    }
-
-    public void setFriendList(List<UserAccount> friendList) {
-        this.friendList = friendList;
-    }
-
-    public List<BankAccount> getBankAccountList() {
-        return bankAccountList;
-    }
-
-    public void setBankAccountList(List<BankAccount> bankAccountList) {
-        this.bankAccountList = bankAccountList;
-    }
-
-    public List<MoneyTransaction> getMoneyTransactionList() {
-        return moneyTransactionList;
-    }
-
-    public void setMoneyTransactionList(List<MoneyTransaction> moneyTransactionList) {
-        this.moneyTransactionList = moneyTransactionList;
-    }
+    @OneToMany
+    private List<MoneyTransactionWithUserAccount> moneyTransactionWithUserAccountList;
 }
