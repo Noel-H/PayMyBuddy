@@ -22,11 +22,13 @@ public class MoneyTransactionWithBankAccount {
     @Column(nullable = false)
     private Double taxAmount;
 
-    @Column(nullable = false)
-    private String ibanBankAccount;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private BankAccount bank;
 
-    @Column(nullable = false)
-    private String loginMailUserAccount;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private UserAccount user;
 
     @Column(nullable = false)
     private Boolean withdraw;

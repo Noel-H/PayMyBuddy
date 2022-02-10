@@ -25,7 +25,7 @@ public class UserAccount {
     private Double balance;
 
     @OneToMany
-    private List<Friend> friendList;
+    private List<UserAccount> friendList;
 
     @OneToMany
     private List<BankAccount> bankAccountList;

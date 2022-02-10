@@ -22,9 +22,11 @@ public class MoneyTransactionWithUserAccount {
     @Column(nullable = false)
     private Double taxAmount;
 
-    @Column(nullable = false)
-    private String loginMailUserAccountSender;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private UserAccount sender;
 
-    @Column(nullable = false)
-    private String loginMailUserAccountReceiver;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private UserAccount receiver;
 }
