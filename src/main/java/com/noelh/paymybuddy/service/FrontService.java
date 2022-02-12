@@ -1,6 +1,7 @@
 package com.noelh.paymybuddy.service;
 
 import com.noelh.paymybuddy.dto.MoneyTransactionDTO;
+import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.UserAccountMinInfoDTO;
 import com.noelh.paymybuddy.model.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,10 @@ public class FrontService {
 
     @Autowired
     private UserAccountService userAccountService;
+
+    public UserAccount getUserAccountByMailAndPassword(SignInDTO signInDTO) {
+        return userAccountService.getUserAccountByMailAndPassword(signInDTO);
+    }
 
     public UserAccountMinInfoDTO getUserAccountMinimalInfoById(long id){
         UserAccount userAccount = userAccountService.getUserAccount(id);

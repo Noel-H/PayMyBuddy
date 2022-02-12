@@ -32,7 +32,7 @@
         </ul>
     </div>
     <nav class="nav">
-        <a class="nav-link" href="#" style="color: black" th:text="${loginMail}">mail@mail.mail</a>
+        <a class="nav-link" href="#" style="color: black" th:text="${userAccount.loginMail}">????@????.????</a>
         <a class="nav-link" href="#">
             <button type="button" class="btn btn-outline-danger">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
@@ -42,7 +42,7 @@
     </nav>
 </div>
 <div >
-    <p style="text-align: right ; margin-right: 25%">Balance : <span style="font-weight: bold ; font-size: xxx-large">5000 €</span></p>
+    <p style="text-align: right ; margin-right: 25%">Balance : <span style="font-weight: bold ; font-size: xxx-large" th:text="${userAccount.balance}+'€'">???</span></p>
 </div>
 <div style="width: 50% ; margin-left: auto ; margin-right: auto">
 
