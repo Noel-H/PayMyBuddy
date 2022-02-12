@@ -1,6 +1,7 @@
 package com.noelh.paymybuddy.controller;
 
 import com.noelh.paymybuddy.dto.SignInDTO;
+import com.noelh.paymybuddy.dto.SignUpDTO;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.service.FrontService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,26 @@ public class FrontController {
         return "HomePage";
     }
 
+    @GetMapping("SignUpPage")
+    public String getSignUpPage(Model model){
+        SignUpDTO signUpDTO = new SignUpDTO();
+        model.addAttribute("signUpDTO", signUpDTO);
+        return "SignUpPage";
+    }
+
+    @PostMapping("SignUpPage")
+    public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO, Model model){
+        try {
+            userAccount = frontService.addUserAccountByMailAndPassword(signUpDTO);
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return "SignUpPage";
+        }
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("transaction", frontService.getMoneyTransactionListById(userAccount.getId()));
+        return "HomePage";
+    }
+
     @GetMapping("HomePage")
     public String getHomePage(Model model){
         try {
@@ -63,8 +84,36 @@ public class FrontController {
         }
     }
 
-    @GetMapping("SignUpPage")
-    public String getSignUpPage(){
-        return "SignUpPage";
+    @GetMapping("BankTransferPage")
+    public String getBankTransferPage(Model model){
+        try {
+            model.addAttribute("userAccount", userAccount);
+            return "BankTransferPage";
+        } catch (NoSuchElementException e){
+            System.out.println(e.getMessage());
+            return "SignInPage";
+        }
+    }
+
+    @GetMapping("FriendListPage")
+    public String getFriendListPage(Model model){
+        try {
+            model.addAttribute("userAccount", userAccount);
+            return "FriendListPage";
+        } catch (NoSuchElementException e){
+            System.out.println(e.getMessage());
+            return "SignInPage";
+        }
+    }
+
+    @GetMapping("BankListPage")
+    public String getBankListPagePage(Model model){
+        try {
+            model.addAttribute("userAccount", userAccount);
+            return "BankListPage";
+        } catch (NoSuchElementException e){
+            System.out.println(e.getMessage());
+            return "SignInPage";
+        }
     }
 }

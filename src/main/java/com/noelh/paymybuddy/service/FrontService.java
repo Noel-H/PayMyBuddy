@@ -2,12 +2,11 @@ package com.noelh.paymybuddy.service;
 
 import com.noelh.paymybuddy.dto.MoneyTransactionDTO;
 import com.noelh.paymybuddy.dto.SignInDTO;
-import com.noelh.paymybuddy.dto.UserAccountMinInfoDTO;
+import com.noelh.paymybuddy.dto.SignUpDTO;
 import com.noelh.paymybuddy.model.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,12 +23,8 @@ public class FrontService {
         return userAccountService.getUserAccountByMailAndPassword(signInDTO);
     }
 
-    public UserAccountMinInfoDTO getUserAccountMinimalInfoById(long id){
-        UserAccount userAccount = userAccountService.getUserAccount(id);
-        UserAccountMinInfoDTO userAccountMinInfoDTO = new UserAccountMinInfoDTO();
-        userAccountMinInfoDTO.setLoginMail(userAccount.getLoginMail());
-        userAccountMinInfoDTO.setBalance(userAccount.getBalance());
-        return userAccountMinInfoDTO;
+    public UserAccount addUserAccountByMailAndPassword(SignUpDTO signUpDTO) {
+        return userAccountService.addUserAccountByMailAndPassword(signUpDTO);
     }
 
     public List<MoneyTransactionDTO> getMoneyTransactionListById(long id){
