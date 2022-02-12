@@ -3,9 +3,8 @@ package com.noelh.paymybuddy.dto;
 import lombok.Data;
 
 @Data
-public class AccountConnexionInfoDTO {
+public class UserAccountMinInfoDTO {
 
     private String loginMail;
-
-    private String password;
+    private double balance;
 }

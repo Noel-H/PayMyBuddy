@@ -1,11 +1,8 @@
 package com.noelh.paymybuddy.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +23,7 @@ public class UserAccount {
     @Column(nullable = false)
     private Double balance;
 
-    @OneToMany
+    @ManyToMany
     private List<UserAccount> friendList;
 
     @OneToMany
@@ -35,6 +32,6 @@ public class UserAccount {
     @OneToMany
     private List<MoneyTransactionWithBankAccount> moneyTransactionWithBankAccountList;
 
-    @OneToMany
+    @ManyToMany
     private List<MoneyTransactionWithUserAccount> moneyTransactionWithUserAccountList;
 }

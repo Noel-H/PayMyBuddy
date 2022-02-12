@@ -1,6 +1,6 @@
 package com.noelh.paymybuddy.service;
 
-import com.noelh.paymybuddy.dto.AccountConnexionInfoDTO;
+import com.noelh.paymybuddy.dto.UserAccountMinInfoDTO;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ public class UserAccountService {
     @Autowired
     UserAccountRepository userAccountRepository;
 
-    public UserAccount getUserAccount(AccountConnexionInfoDTO accountConnexionInfoDTO) {
-        return userAccountRepository.getById(1L);
+    public UserAccount getUserAccount(long id) {
+        return userAccountRepository.getById(id);
     }
 }
