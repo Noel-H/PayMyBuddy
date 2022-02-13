@@ -23,6 +23,10 @@ public class FrontService {
         return userAccountService.getUserAccountByMailAndPassword(signInDTO);
     }
 
+    public boolean isUserConnected(UserAccount userAccount){
+        return userAccountService.isUserConnected(userAccount);
+    }
+
     public UserAccount addUserAccountByMailAndPassword(SignUpDTO signUpDTO) {
         return userAccountService.addUserAccountByMailAndPassword(signUpDTO);
     }

@@ -20,6 +20,10 @@ public class UserAccountService {
         return userAccountRepository.getById(id);
     }
 
+    public boolean isUserConnected(UserAccount userAccount){
+        return userAccount != null;
+    }
+
     public UserAccount getUserAccountByMailAndPassword(SignInDTO signInDTO) {
         return userAccountRepository.findByLoginMailAndPassword(signInDTO.getLoginMail(),signInDTO.getPassword())
                 .orElseThrow(()-> new NoSuchElementException("Echec lors de la connexion !"));

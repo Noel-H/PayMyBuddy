@@ -61,8 +61,21 @@ public class FrontController {
         return "HomePage";
     }
 
+    @GetMapping("DisconnectUser")
+    public String DisconnectUser(Model model){
+        userAccount=null;
+        SignInDTO signInDTO = new SignInDTO();
+        model.addAttribute("signInDTO",signInDTO);
+        return "DisconnectUser";
+    }
+
     @GetMapping("HomePage")
     public String getHomePage(Model model){
+        if (!frontService.isUserConnected(userAccount)){
+            SignInDTO signInDTO = new SignInDTO();
+            model.addAttribute("signInDTO",signInDTO);
+            return "SignInPage";
+        }
         try {
             model.addAttribute("userAccount", userAccount);
             model.addAttribute("transaction", frontService.getMoneyTransactionListById(userAccount.getId()));
@@ -75,6 +88,11 @@ public class FrontController {
 
     @GetMapping("UserTransferPage")
     public String getUserTransferPage(Model model){
+        if (!frontService.isUserConnected(userAccount)){
+            SignInDTO signInDTO = new SignInDTO();
+            model.addAttribute("signInDTO",signInDTO);
+            return "SignInPage";
+        }
         try {
             model.addAttribute("userAccount", userAccount);
             return "UserTransferPage";
@@ -86,6 +104,11 @@ public class FrontController {
 
     @GetMapping("BankTransferPage")
     public String getBankTransferPage(Model model){
+        if (!frontService.isUserConnected(userAccount)){
+            SignInDTO signInDTO = new SignInDTO();
+            model.addAttribute("signInDTO",signInDTO);
+            return "SignInPage";
+        }
         try {
             model.addAttribute("userAccount", userAccount);
             return "BankTransferPage";
@@ -97,6 +120,11 @@ public class FrontController {
 
     @GetMapping("FriendListPage")
     public String getFriendListPage(Model model){
+        if (!frontService.isUserConnected(userAccount)){
+            SignInDTO signInDTO = new SignInDTO();
+            model.addAttribute("signInDTO",signInDTO);
+            return "SignInPage";
+        }
         try {
             model.addAttribute("userAccount", userAccount);
             return "FriendListPage";
@@ -108,6 +136,11 @@ public class FrontController {
 
     @GetMapping("BankListPage")
     public String getBankListPagePage(Model model){
+        if (!frontService.isUserConnected(userAccount)){
+            SignInDTO signInDTO = new SignInDTO();
+            model.addAttribute("signInDTO",signInDTO);
+            return "SignInPage";
+        }
         try {
             model.addAttribute("userAccount", userAccount);
             return "BankListPage";
