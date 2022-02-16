@@ -25,6 +25,10 @@ public class UserAccountService {
         return userAccountRepository.getById(id);
     }
 
+    public UserAccount getUserAccountByLoginMail(String loginMail){
+        return userAccountRepository.getUserAccountByLoginMail(loginMail);
+    }
+
     public boolean isUserConnected(UserAccount userAccount){
         return userAccount != null;
     }
@@ -54,15 +58,29 @@ public class UserAccountService {
     }
 
     public boolean addBankAccountInUserAccount(Long userAccountId, String iban) {
-        if (getUserAccount(userAccountId).getBankAccountList().contains(iban)){
+        if (getUserAccount(userAccountId).getBankAccountList().contains(bankAccountService.getBankAccountByIban(iban))){
             throw new IllegalArgumentException("The Bank Account "+iban+" is already added");
         }
         if (bankAccountService.isBankAccountExist(iban)){
             throw new IllegalArgumentException("The Bank Account "+iban+" is already used");
         }
-        ;
         getUserAccount(userAccountId).getBankAccountList().add(bankAccountService.addBankAccount(iban));
         userAccountRepository.save(getUserAccount(userAccountId));
         return true;
+    }
+
+    public List<UserAccount> getFriendListByUser(UserAccount userAccount) {
+        return userAccountRepository.getById(userAccount.getId()).getFriendList();
+    }
+
+    public void addFriendByUserAccountId(Long userAccountId, String loginMail) {
+        if (!userAccountRepository.existsUserAccountByLoginMail(loginMail)){
+            throw new IllegalArgumentException("The login/Mail "+loginMail+" don't exist");
+        }
+        if (getUserAccount(userAccountId).getFriendList().contains(getUserAccountByLoginMail(loginMail))){
+            throw new IllegalArgumentException("The login/Mail "+loginMail+" is already added");
+        }
+        getUserAccount(userAccountId).getFriendList().add(getUserAccountByLoginMail(loginMail));
+        userAccountRepository.save(getUserAccount(userAccountId));
     }
 }

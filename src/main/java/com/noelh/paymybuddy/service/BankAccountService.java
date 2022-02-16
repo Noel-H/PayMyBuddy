@@ -24,4 +24,8 @@ public class BankAccountService {
         bankAccount.setIban(iban);
         return bankAccountRepository.save(bankAccount);
     }
+
+    public BankAccount getBankAccountByIban(String iban){
+        return bankAccountRepository.getBankAccountByIban(iban);
+    }
 }

@@ -44,16 +44,35 @@
 <div >
     <p style="text-align: right ; margin-right: 25%">Balance : <span style="font-weight: bold ; font-size: xxx-large" th:text="${userAccount.balance}+'€'">???</span></p>
 </div>
-<div style="width: 50% ; margin-left: auto ; margin-right: auto">
+<div style="margin-left: 25% ; margin-right: 25%">
     <table class="table table-bordered table-sm table-hover">
         <thead class="table-light">
         <tr>
-            <th scope="col" style="width: 20%">Date</th>
-            <th scope="col" style="width: 60%">Target</th>
-            <th scope="col" style="width: 20% ; text-align: center">€</th>
+            <th scope="col" style="width: 60%">
+                <form th:action="@{/FriendListPage}" th:object="${addFriendDTO}" method="POST">
+                    <div class="form-group row" style="text-align: center">
+                        <label for="email_address" class="col-md-4 col-form-label text-md-right">Login/Mail</label>
+                        <div class="col-md-6">
+                            <input type="text" id="email_address" class="form-control" name="email-address" th:field="*{loginMail}" required autofocus>
+                        </div>
+                        <div style="margin-top: 1%">
+                            <button type="submit" class="btn btn-primary">
+                                Ajoutez
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </th>
         </tr>
         </thead>
+    </table>
+</div>
+<div style="width: 50% ; margin-left: auto ; margin-right: auto">
+    <table class="table table-bordered table-sm table-hover">
         <tbody>
+        <tr th:each="friend : ${friendList}" class="table-primary">
+            <td th:text="${friend.getLoginMail()}"></td>
+        </tr>
         </tbody>
     </table>
 </div>

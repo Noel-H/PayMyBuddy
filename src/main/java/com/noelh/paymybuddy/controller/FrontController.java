@@ -1,6 +1,7 @@
 package com.noelh.paymybuddy.controller;
 
 import com.noelh.paymybuddy.dto.AddBankDTO;
+import com.noelh.paymybuddy.dto.AddFriendDTO;
 import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
 import com.noelh.paymybuddy.model.UserAccount;
@@ -126,13 +127,28 @@ public class FrontController {
             model.addAttribute("signInDTO",signInDTO);
             return "SignInPage";
         }
+        AddFriendDTO addFriendDTO = new AddFriendDTO();
+        model.addAttribute("addFriendDTO",addFriendDTO);
         try {
             model.addAttribute("userAccount", userAccount);
+            model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
             return "FriendListPage";
         } catch (NoSuchElementException e){
             System.out.println(e.getMessage());
             return "SignInPage";
         }
+    }
+
+    @PostMapping("FriendListPage")
+    public String submitFriendListPage(@ModelAttribute("addFriendDTO") AddFriendDTO addFriendDTO, Model model){
+        try {
+            frontService.addFriendByUserAccountId(userAccount.getId(), addFriendDTO.getLoginMail());
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
+        return "FriendListPage";
     }
 
     @GetMapping("BankListPage")
@@ -157,7 +173,6 @@ public class FrontController {
     @PostMapping("BankListPage")
     public String submitBankListPage(@ModelAttribute("addBankDTO") AddBankDTO addBankDTO, Model model){
         try {
-//            System.out.println("Bank ajoutez : " + addBankDTO.getIban());
             frontService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());

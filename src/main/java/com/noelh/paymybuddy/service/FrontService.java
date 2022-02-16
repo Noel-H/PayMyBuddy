@@ -77,4 +77,12 @@ public class FrontService {
     public boolean addBankAccountByUserAccountId(Long userAccountId, String iban) {
         return userAccountService.addBankAccountInUserAccount(userAccountId,iban);
     }
+
+    public List<UserAccount> getFriendListByUser(UserAccount userAccount) {
+        return userAccountService.getFriendListByUser(userAccount);
+    }
+
+    public void addFriendByUserAccountId(Long id, String loginMail) {
+        userAccountService.addFriendByUserAccountId(id,loginMail);
+    }
 }
