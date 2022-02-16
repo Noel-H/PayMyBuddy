@@ -73,4 +73,8 @@ public class FrontService {
     public List<BankAccount> getBankAccountListByUser(UserAccount userAccount){
         return userAccountService.getBankaccountListbyUser(userAccount);
     }
+
+    public boolean addBankAccountByUserAccountId(Long userAccountId, String iban) {
+        return userAccountService.addBankAccountInUserAccount(userAccountId,iban);
+    }
 }

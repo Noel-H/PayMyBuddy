@@ -16,7 +16,10 @@ import java.util.NoSuchElementException;
 public class UserAccountService {
 
     @Autowired
-    UserAccountRepository userAccountRepository;
+    private UserAccountRepository userAccountRepository;
+
+    @Autowired
+    private BankAccountService bankAccountService;
 
     public UserAccount getUserAccount(long id) {
         return userAccountRepository.getById(id);
@@ -48,5 +51,18 @@ public class UserAccountService {
 
     public List<BankAccount> getBankaccountListbyUser(UserAccount userAccount){
         return userAccountRepository.getById(userAccount.getId()).getBankAccountList();
+    }
+
+    public boolean addBankAccountInUserAccount(Long userAccountId, String iban) {
+        if (getUserAccount(userAccountId).getBankAccountList().contains(iban)){
+            throw new IllegalArgumentException("The Bank Account "+iban+" is already added");
+        }
+        if (bankAccountService.isBankAccountExist(iban)){
+            throw new IllegalArgumentException("The Bank Account "+iban+" is already used");
+        }
+        ;
+        getUserAccount(userAccountId).getBankAccountList().add(bankAccountService.addBankAccount(iban));
+        userAccountRepository.save(getUserAccount(userAccountId));
+        return true;
     }
 }

@@ -11,4 +11,17 @@ import java.util.List;
 
 @Service
 public class BankAccountService {
+
+    @Autowired
+    private BankAccountRepository bankAccountRepository;
+
+    public boolean isBankAccountExist(String iban) {
+        return bankAccountRepository.existsBankAccountByIban(iban);
+    }
+
+    public BankAccount addBankAccount(String iban) {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setIban(iban);
+        return bankAccountRepository.save(bankAccount);
+    }
 }

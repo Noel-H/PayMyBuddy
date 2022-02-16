@@ -157,8 +157,8 @@ public class FrontController {
     @PostMapping("BankListPage")
     public String submitBankListPage(@ModelAttribute("addBankDTO") AddBankDTO addBankDTO, Model model){
         try {
-            System.out.println("Bank ajoutez : " + addBankDTO.getIban());
-//            frontService.addBankByUser(userAccount, "");
+//            System.out.println("Bank ajoutez : " + addBankDTO.getIban());
+            frontService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
