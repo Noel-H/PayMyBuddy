@@ -2,12 +2,14 @@ package com.noelh.paymybuddy.service;
 
 import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
+import com.noelh.paymybuddy.model.BankAccount;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -42,5 +44,9 @@ public class UserAccountService {
         userAccount.setMoneyTransactionWithBankAccountList(new ArrayList<>());
         userAccount.setMoneyTransactionWithUserAccountList(new ArrayList<>());
         return userAccountRepository.save(userAccount);
+    }
+
+    public List<BankAccount> getBankaccountListbyUser(UserAccount userAccount){
+        return userAccountRepository.getById(userAccount.getId()).getBankAccountList();
     }
 }

@@ -3,7 +3,9 @@ package com.noelh.paymybuddy.service;
 import com.noelh.paymybuddy.dto.MoneyTransactionDTO;
 import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
+import com.noelh.paymybuddy.model.BankAccount;
 import com.noelh.paymybuddy.model.UserAccount;
+import com.noelh.paymybuddy.repository.BankAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class FrontService {
         return userAccountService.addUserAccountByMailAndPassword(signUpDTO);
     }
 
-    public List<MoneyTransactionDTO> getMoneyTransactionListById(long id){
+    public List<MoneyTransactionDTO> getMoneyTransactionListByUserId(long id){
         List<MoneyTransactionDTO> moneyTransactionDTOList = new ArrayList<>();
         List<MoneyTransactionDTO> moneyTransactionWithBankAccountListDTOList = userAccountService.getUserAccount(id).getMoneyTransactionWithBankAccountList().stream()
                 .map(moneyTransactionWithBankAccount -> new MoneyTransactionDTO(
@@ -66,5 +68,9 @@ public class FrontService {
         moneyTransactionWithUserAccountListDTOList.forEach(moneyTransactionDTO -> moneyTransactionDTOList.add(moneyTransactionDTO) );
         Collections.sort(moneyTransactionDTOList, Comparator.comparing(MoneyTransactionDTO::getDate).reversed());
         return moneyTransactionDTOList;
+    }
+
+    public List<BankAccount> getBankAccountListByUser(UserAccount userAccount){
+        return userAccountService.getBankaccountListbyUser(userAccount);
     }
 }

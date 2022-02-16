@@ -1,5 +1,6 @@
 package com.noelh.paymybuddy.controller;
 
+import com.noelh.paymybuddy.dto.AddBankDTO;
 import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
 import com.noelh.paymybuddy.model.UserAccount;
@@ -37,7 +38,7 @@ public class FrontController {
             return "SignInPage";
         }
         model.addAttribute("userAccount", userAccount);
-        model.addAttribute("transaction", frontService.getMoneyTransactionListById(userAccount.getId()));
+        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
         return "HomePage";
     }
 
@@ -57,7 +58,7 @@ public class FrontController {
             return "SignUpPage";
         }
         model.addAttribute("userAccount", userAccount);
-        model.addAttribute("transaction", frontService.getMoneyTransactionListById(userAccount.getId()));
+        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
         return "HomePage";
     }
 
@@ -78,7 +79,7 @@ public class FrontController {
         }
         try {
             model.addAttribute("userAccount", userAccount);
-            model.addAttribute("transaction", frontService.getMoneyTransactionListById(userAccount.getId()));
+            model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
             return "HomePage";
         } catch (NoSuchElementException e){
             System.out.println(e.getMessage());
@@ -141,12 +142,28 @@ public class FrontController {
             model.addAttribute("signInDTO",signInDTO);
             return "SignInPage";
         }
+        AddBankDTO addBankDTO = new AddBankDTO();
+        model.addAttribute("addBankDTO", addBankDTO);
         try {
             model.addAttribute("userAccount", userAccount);
+            model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
             return "BankListPage";
         } catch (NoSuchElementException e){
             System.out.println(e.getMessage());
             return "SignInPage";
         }
+    }
+
+    @PostMapping("BankListPage")
+    public String submitBankListPage(@ModelAttribute("addBankDTO") AddBankDTO addBankDTO, Model model){
+        try {
+            System.out.println("Bank ajoutez : " + addBankDTO.getIban());
+//            frontService.addBankByUser(userAccount, "");
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
+        return "BankListPage";
     }
 }
