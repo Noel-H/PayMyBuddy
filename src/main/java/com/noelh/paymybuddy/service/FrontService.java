@@ -97,4 +97,12 @@ public class FrontService {
     public void addMoneyTransactionBetweenUser(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) {
         moneyTransactionWithUserAccountService.addTransactionWithUserAccount(id,confirmMoneyTransactionWithUserAccountDTO);
     }
+
+    public String getWithdrawStatus(boolean withdraw) {
+        if (withdraw){
+            return "checked";
+        } else {
+            return null;
+        }
+    }
 }

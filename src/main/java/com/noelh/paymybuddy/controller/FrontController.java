@@ -137,6 +137,8 @@ public class FrontController {
             model.addAttribute("signInDTO",signInDTO);
             return "SignInPage";
         }
+        AddMoneyTransactionWithBankAccountDTO addMoneyTransactionWithBankAccountDTO = new AddMoneyTransactionWithBankAccountDTO();
+        model.addAttribute("addMoneyTransactionWithBankAccountDTO", addMoneyTransactionWithBankAccountDTO);
         try {
             model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
             return "BankTransferPage";
@@ -144,6 +146,35 @@ public class FrontController {
             System.out.println(e.getMessage());
             return "SignInPage";
         }
+    }
+
+    @PostMapping("BankTransferPage")
+    public String submitBankTransferPage(@ModelAttribute("addMoneyTransactionWithBankAccountDTO") AddMoneyTransactionWithBankAccountDTO addMoneyTransactionWithBankAccountDTO,
+                                         @ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
+                                         Model model){
+        confirmMoneyTransactionWithBankAccountDTO.setTaxAmount((addMoneyTransactionWithBankAccountDTO.getAmount()*0.5)/100);
+        confirmMoneyTransactionWithBankAccountDTO.setTotalAmount(addMoneyTransactionWithBankAccountDTO.getAmount()+confirmMoneyTransactionWithBankAccountDTO.getTaxAmount());
+        model.addAttribute("transactionRecap",addMoneyTransactionWithBankAccountDTO);
+        model.addAttribute("test", confirmMoneyTransactionWithBankAccountDTO);
+        model.addAttribute("withdraw",confirmMoneyTransactionWithBankAccountDTO.isWithdraw());
+        model.addAttribute("withdrawStatus",frontService.getWithdrawStatus(confirmMoneyTransactionWithBankAccountDTO.isWithdraw()));
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
+        return "BankTransferConfirmationPage";
+    }
+
+    @PostMapping("BankTransferConfirmationPage")
+    public String submitBankTransferConfirmationPage(@ModelAttribute("addMoneyTransactionWithBankAccountDTO") AddMoneyTransactionWithBankAccountDTO addMoneyTransactionWithBankAccountDTO,
+                                                     @ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
+                                                     Model model){
+//        try {
+//            frontService.addMoneyTransactionBetweenUser(userAccount.getId(),confirmMoneyTransactionWithUserAccountDTO);
+//        } catch (IllegalArgumentException e){
+//            System.out.println(e.getMessage());
+//        }
+        System.out.println(confirmMoneyTransactionWithBankAccountDTO);
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
+        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
+        return "HomePage";
     }
 
     @GetMapping("FriendListPage")
