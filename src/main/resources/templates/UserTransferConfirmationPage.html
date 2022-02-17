@@ -49,19 +49,27 @@
         <thead class="table-light">
         <tr>
             <th scope="col" style="width: 60%">
-                <form th:action="@{/UserTransferPage}" th:object="${addMoneyTransactionWithUserAccountDTO}" method="POST">
+                <form th:action="@{/UserTransferConfirmationPage}" th:object="${confirmMoneyTransactionWithUserAccountDTO}" method="POST">
                     <div class="form-group row" style="text-align: center">
-                        <label for="login_mail" class="col-md-4 col-form-label text-md-right">Login/Mail</label>
-                        <div class="col-md-6" style="margin-bottom: 1%">
-                            <input type="text" id="login_mail" class="form-control" name="email-address" th:field="*{loginMail}" required autofocus>
+                            <div class="form-group">
+                                <label for="disabledTextInput" class="col-md-4 col-form-label text-md-right">Login/Mail</label>
+                                <input type="text" id="disabledTextInput" class="form-control" th:placeholder="${transactionRecap.getLoginMail()}" style="text-align: center" th:field="*{loginMail}" readonly>
+                            </div>
+                        <div class="form-group">
+                            <label for="disabledTextInput2" class="col-md-4 col-form-label text-md-right">Amount</label>
+                            <input type="text" id="disabledTextInput2" class="form-control" th:placeholder="${transactionRecap.getAmount()}" style="text-align: center" th:field="*{amount}" readonly>
                         </div>
-                        <label for="amount" class="col-md-4 col-form-label text-md-right">Amount</label>
-                        <div class="col-md-6">
-                            <input type="text" id="amount" class="form-control" name="email-address" th:field="*{amount}" required autofocus>
+                        <div class="form-group">
+                            <label for="disabledTextInput3" class="col-md-4 col-form-label text-md-right">Tax Amount</label>
+                            <input type="text" id="disabledTextInput3" class="form-control" th:placeholder="${test.taxAmount}" style="text-align: center" th:field="*{taxAmount}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="disabledTextInput4" class="col-md-4 col-form-label text-md-right">Total Amount</label>
+                            <input type="text" id="disabledTextInput4" class="form-control" th:placeholder="a" style="text-align: center" th:field="*{totalAmount}" readonly>
                         </div>
                         <div style="margin-top: 1%">
                             <button type="submit" class="btn btn-primary">
-                                Valider
+                                Confirm
                             </button>
                         </div>
                     </div>

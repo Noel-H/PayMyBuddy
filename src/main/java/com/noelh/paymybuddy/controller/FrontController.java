@@ -1,9 +1,7 @@
 package com.noelh.paymybuddy.controller;
 
-import com.noelh.paymybuddy.dto.AddBankDTO;
-import com.noelh.paymybuddy.dto.AddFriendDTO;
-import com.noelh.paymybuddy.dto.SignInDTO;
-import com.noelh.paymybuddy.dto.SignUpDTO;
+import com.noelh.paymybuddy.dto.*;
+import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.service.FrontService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ public class FrontController {
     @PostMapping()
     public String submitSignInPage(@ModelAttribute("signInDTO") SignInDTO signInDTO, Model model){
         try {
-             userAccount = frontService.getUserAccountByMailAndPassword(signInDTO);
+            userAccount = frontService.getUserAccountByMailAndPassword(signInDTO);
         } catch (NoSuchElementException e){
             System.out.println(e.getMessage());
             return "SignInPage";
@@ -95,6 +93,8 @@ public class FrontController {
             model.addAttribute("signInDTO",signInDTO);
             return "SignInPage";
         }
+        AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO = new AddMoneyTransactionWithUserAccountDTO();
+        model.addAttribute("addMoneyTransactionWithUserAccountDTO", addMoneyTransactionWithUserAccountDTO);
         try {
             model.addAttribute("userAccount", userAccount);
             return "UserTransferPage";
@@ -102,6 +102,34 @@ public class FrontController {
             System.out.println(e.getMessage());
             return "SignInPage";
         }
+    }
+
+    @PostMapping("UserTransferPage")
+    public String submitUserTransferPage(@ModelAttribute("addMoneyTransactionWithUserAccountDTO") AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO,
+                                         @ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
+                                         Model model){
+        confirmMoneyTransactionWithUserAccountDTO.setTaxAmount((addMoneyTransactionWithUserAccountDTO.getAmount()*0.5)/100);
+        confirmMoneyTransactionWithUserAccountDTO.setTotalAmount(addMoneyTransactionWithUserAccountDTO.getAmount()+confirmMoneyTransactionWithUserAccountDTO.getTaxAmount());
+        model.addAttribute("transactionRecap",addMoneyTransactionWithUserAccountDTO);
+        model.addAttribute("test", confirmMoneyTransactionWithUserAccountDTO);
+        model.addAttribute("userAccount", userAccount);
+        return "UserTransferConfirmationPage";
+    }
+
+    @PostMapping("UserTransferConfirmationPage")
+    public String submitUserTransferConfirmationPage(@ModelAttribute("addMoneyTransactionWithUserAccountDTO") AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO,
+                                                     @ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
+                                                     Model model){
+        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getLoginMail());
+        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getAmount());
+        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getTaxAmount());
+        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getTotalAmount());
+
+
+        //
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
+        return "HomePage";
     }
 
     @GetMapping("BankTransferPage")
