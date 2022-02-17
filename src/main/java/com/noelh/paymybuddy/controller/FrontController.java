@@ -166,12 +166,11 @@ public class FrontController {
     public String submitBankTransferConfirmationPage(@ModelAttribute("addMoneyTransactionWithBankAccountDTO") AddMoneyTransactionWithBankAccountDTO addMoneyTransactionWithBankAccountDTO,
                                                      @ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
                                                      Model model){
-//        try {
-//            frontService.addMoneyTransactionBetweenUser(userAccount.getId(),confirmMoneyTransactionWithUserAccountDTO);
-//        } catch (IllegalArgumentException e){
-//            System.out.println(e.getMessage());
-//        }
-        System.out.println(confirmMoneyTransactionWithBankAccountDTO);
+        try {
+            frontService.addMoneyTransactionWithBank(userAccount.getId(),confirmMoneyTransactionWithBankAccountDTO);
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
         model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
         return "HomePage";

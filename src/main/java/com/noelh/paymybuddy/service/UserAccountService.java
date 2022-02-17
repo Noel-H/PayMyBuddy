@@ -3,6 +3,7 @@ package com.noelh.paymybuddy.service;
 import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
 import com.noelh.paymybuddy.model.BankAccount;
+import com.noelh.paymybuddy.model.MoneyTransactionWithBankAccount;
 import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.repository.UserAccountRepository;
@@ -100,5 +101,17 @@ public class UserAccountService {
         userAccount2.setBalance(userAccount2.getBalance()+moneyReceive);
         userAccountRepository.save(userAccount1);
         userAccountRepository.save(userAccount2);
+    }
+
+    public void addWithdrawMoneyTransactionWithBank(UserAccount userAccount, MoneyTransactionWithBankAccount moneyTransactionWithBankAccount) {
+        userAccount.getMoneyTransactionWithBankAccountList().add(moneyTransactionWithBankAccount);
+        userAccount.setBalance(userAccount.getBalance()+moneyTransactionWithBankAccount.getAmount());
+        userAccountRepository.save(userAccount);
+    }
+
+    public void addDepositMoneyTransactionWithBank(UserAccount userAccount, MoneyTransactionWithBankAccount moneyTransactionWithBankAccount) {
+        userAccount.getMoneyTransactionWithBankAccountList().add(moneyTransactionWithBankAccount);
+        userAccount.setBalance(userAccount.getBalance()-(moneyTransactionWithBankAccount.getAmount()+moneyTransactionWithBankAccount.getTaxAmount()));
+        userAccountRepository.save(userAccount);
     }
 }

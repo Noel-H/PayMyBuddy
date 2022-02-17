@@ -1,9 +1,6 @@
 package com.noelh.paymybuddy.service;
 
-import com.noelh.paymybuddy.dto.ConfirmMoneyTransactionWithUserAccountDTO;
-import com.noelh.paymybuddy.dto.MoneyTransactionDTO;
-import com.noelh.paymybuddy.dto.SignInDTO;
-import com.noelh.paymybuddy.dto.SignUpDTO;
+import com.noelh.paymybuddy.dto.*;
 import com.noelh.paymybuddy.model.BankAccount;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.repository.BankAccountRepository;
@@ -24,6 +21,9 @@ public class FrontService {
 
     @Autowired
     private MoneyTransactionWithUserAccountService moneyTransactionWithUserAccountService;
+
+    @Autowired
+    private MoneyTransactionWithBankAccountService moneyTransactionWithBankAccountService;
 
     public UserAccount getUserAccountById(long id){
         return userAccountService.getUserAccount(id);
@@ -103,6 +103,14 @@ public class FrontService {
             return "checked";
         } else {
             return null;
+        }
+    }
+
+    public void addMoneyTransactionWithBank(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) {
+        if (confirmMoneyTransactionWithBankAccountDTO.isWithdraw()){
+            moneyTransactionWithBankAccountService.addWithdrawMoneyTransaction(id,confirmMoneyTransactionWithBankAccountDTO);
+        } else {
+            moneyTransactionWithBankAccountService.addDepositMoneyTransaction(id,confirmMoneyTransactionWithBankAccountDTO);
         }
     }
 }
