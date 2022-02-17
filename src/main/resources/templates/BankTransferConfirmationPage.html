@@ -52,7 +52,7 @@
                 <form th:action="@{/BankTransferConfirmationPage}" th:object="${confirmMoneyTransactionWithBankAccountDTO}" method="POST">
                     <div class="form-group row" style="text-align: center">
                             <div class="form-group">
-                                <label for="disabledTextInput" class="col-md-4 col-form-label text-md-right">Login/Mail</label>
+                                <label for="disabledTextInput" class="col-md-4 col-form-label text-md-right">Iban</label>
                                 <input type="text" id="disabledTextInput" class="form-control" th:placeholder="${transactionRecap.getIban()}" style="text-align: center" th:field="*{iban}" readonly>
                             </div>
                         <div class="form-group">
