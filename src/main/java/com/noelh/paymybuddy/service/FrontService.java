@@ -1,5 +1,6 @@
 package com.noelh.paymybuddy.service;
 
+import com.noelh.paymybuddy.dto.ConfirmMoneyTransactionWithUserAccountDTO;
 import com.noelh.paymybuddy.dto.MoneyTransactionDTO;
 import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
@@ -20,6 +21,13 @@ public class FrontService {
 
     @Autowired
     private UserAccountService userAccountService;
+
+    @Autowired
+    private MoneyTransactionWithUserAccountService moneyTransactionWithUserAccountService;
+
+    public UserAccount getUserAccountById(long id){
+        return userAccountService.getUserAccount(id);
+    }
 
     public UserAccount getUserAccountByMailAndPassword(SignInDTO signInDTO) {
         return userAccountService.getUserAccountByMailAndPassword(signInDTO);
@@ -84,5 +92,9 @@ public class FrontService {
 
     public void addFriendByUserAccountId(Long id, String loginMail) {
         userAccountService.addFriendByUserAccountId(id,loginMail);
+    }
+
+    public void addMoneyTransactionBetweenUser(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) {
+        moneyTransactionWithUserAccountService.addTransactionWithUserAccount(id,confirmMoneyTransactionWithUserAccountDTO);
     }
 }

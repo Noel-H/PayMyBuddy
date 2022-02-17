@@ -36,7 +36,7 @@ public class FrontController {
             System.out.println(e.getMessage());
             return "SignInPage";
         }
-        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
         return "HomePage";
     }
@@ -56,7 +56,7 @@ public class FrontController {
             System.out.println(e.getMessage());
             return "SignUpPage";
         }
-        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
         return "HomePage";
     }
@@ -77,7 +77,7 @@ public class FrontController {
             return "SignInPage";
         }
         try {
-            model.addAttribute("userAccount", userAccount);
+            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
             model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
             return "HomePage";
         } catch (NoSuchElementException e){
@@ -96,7 +96,7 @@ public class FrontController {
         AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO = new AddMoneyTransactionWithUserAccountDTO();
         model.addAttribute("addMoneyTransactionWithUserAccountDTO", addMoneyTransactionWithUserAccountDTO);
         try {
-            model.addAttribute("userAccount", userAccount);
+            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
             return "UserTransferPage";
         } catch (NoSuchElementException e){
             System.out.println(e.getMessage());
@@ -112,7 +112,7 @@ public class FrontController {
         confirmMoneyTransactionWithUserAccountDTO.setTotalAmount(addMoneyTransactionWithUserAccountDTO.getAmount()+confirmMoneyTransactionWithUserAccountDTO.getTaxAmount());
         model.addAttribute("transactionRecap",addMoneyTransactionWithUserAccountDTO);
         model.addAttribute("test", confirmMoneyTransactionWithUserAccountDTO);
-        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         return "UserTransferConfirmationPage";
     }
 
@@ -120,14 +120,12 @@ public class FrontController {
     public String submitUserTransferConfirmationPage(@ModelAttribute("addMoneyTransactionWithUserAccountDTO") AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO,
                                                      @ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
                                                      Model model){
-        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getLoginMail());
-        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getAmount());
-        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getTaxAmount());
-        System.out.println(confirmMoneyTransactionWithUserAccountDTO.getTotalAmount());
-
-
-        //
-        model.addAttribute("userAccount", userAccount);
+        try {
+            frontService.addMoneyTransactionBetweenUser(userAccount.getId(),confirmMoneyTransactionWithUserAccountDTO);
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
         return "HomePage";
     }
@@ -140,7 +138,7 @@ public class FrontController {
             return "SignInPage";
         }
         try {
-            model.addAttribute("userAccount", userAccount);
+            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
             return "BankTransferPage";
         } catch (NoSuchElementException e){
             System.out.println(e.getMessage());
@@ -158,7 +156,7 @@ public class FrontController {
         AddFriendDTO addFriendDTO = new AddFriendDTO();
         model.addAttribute("addFriendDTO",addFriendDTO);
         try {
-            model.addAttribute("userAccount", userAccount);
+            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
             model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
             return "FriendListPage";
         } catch (NoSuchElementException e){
@@ -174,7 +172,7 @@ public class FrontController {
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
-        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
         return "FriendListPage";
     }
@@ -189,7 +187,7 @@ public class FrontController {
         AddBankDTO addBankDTO = new AddBankDTO();
         model.addAttribute("addBankDTO", addBankDTO);
         try {
-            model.addAttribute("userAccount", userAccount);
+            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
             model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
             return "BankListPage";
         } catch (NoSuchElementException e){
@@ -205,7 +203,7 @@ public class FrontController {
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
         }
-        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
         return "BankListPage";
     }

@@ -3,6 +3,7 @@ package com.noelh.paymybuddy.service;
 import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
 import com.noelh.paymybuddy.model.BankAccount;
+import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,22 @@ public class UserAccountService {
         }
         getUserAccount(userAccountId).getFriendList().add(getUserAccountByLoginMail(loginMail));
         userAccountRepository.save(getUserAccount(userAccountId));
+    }
+
+    public boolean existsUserAccountByLoginMail(String loginMail){
+        return userAccountRepository.existsUserAccountByLoginMail(loginMail);
+    }
+
+    public void addMoneyTransactionWithUser(UserAccount userAccount1,
+                                            double moneySend,
+                                            UserAccount userAccount2,
+                                            double moneyReceive,
+                                            MoneyTransactionWithUserAccount moneyTransactionWithUserAccount) {
+        userAccount1.getMoneyTransactionWithUserAccountList().add(moneyTransactionWithUserAccount);
+        userAccount1.setBalance(userAccount1.getBalance()-moneySend);
+        userAccount2.getMoneyTransactionWithUserAccountList().add(moneyTransactionWithUserAccount);
+        userAccount2.setBalance(userAccount2.getBalance()+moneyReceive);
+        userAccountRepository.save(userAccount1);
+        userAccountRepository.save(userAccount2);
     }
 }
