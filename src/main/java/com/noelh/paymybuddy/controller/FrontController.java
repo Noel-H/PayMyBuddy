@@ -40,7 +40,7 @@ public class FrontController {
             userAccount = frontService.addUserAccountByMailAndPassword(signUpDTO);
         model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-        return "HomePage";
+        return "login";
     }
 
     @GetMapping("/")
