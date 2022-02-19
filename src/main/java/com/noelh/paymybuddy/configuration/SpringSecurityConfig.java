@@ -30,11 +30,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/")
-                .permitAll()
-                .antMatchers("/HomePage")
+                .antMatchers("/",
+                        "/HomePage",
+                        "/UserTransferPage",
+                        "/BankTransferPage",
+                        "/FriendListPage",
+                        "/BankListPage")
                 .authenticated()
                 .and()
-                .httpBasic();
+                .formLogin();
     }
 }
