@@ -8,6 +8,7 @@ import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,9 +45,11 @@ public class UserAccountService {
         if(userAccountRepository.existsUserAccountByLoginMail(signUpDTO.getLoginMail())){
             throw new IllegalArgumentException("The login "+signUpDTO.getLoginMail()+" is already taken");
         }
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
         UserAccount userAccount = new UserAccount();
         userAccount.setLoginMail(signUpDTO.getLoginMail());
-        userAccount.setPassword(signUpDTO.getPassword());
+        userAccount.setPassword(bCryptPasswordEncoder.encode(signUpDTO.getPassword()));
         userAccount.setBalance(0.0);
         userAccount.setFriendList(new ArrayList<>());
         userAccount.setBankAccountList(new ArrayList<>());

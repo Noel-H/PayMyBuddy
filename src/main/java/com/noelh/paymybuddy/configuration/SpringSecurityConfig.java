@@ -29,7 +29,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .authorizeRequests()
                 .antMatchers("/",
                         "/HomePage",
                         "/UserTransferPage",
@@ -38,6 +39,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/BankListPage")
                 .authenticated()
                 .and()
-                .formLogin();
+                .formLogin()
+                .loginPage("/login");
     }
 }

@@ -21,8 +21,6 @@ import java.util.NoSuchElementException;
 @Controller
 public class FrontController {
 
-    UserAccount userAccount;
-
     @Autowired
     private FrontService frontService;
 
@@ -33,11 +31,12 @@ public class FrontController {
     public String getSignUpPage(Model model){
         SignUpDTO signUpDTO = new SignUpDTO();
         model.addAttribute("signUpDTO", signUpDTO);
-        return "SignUpPage";
+        return "SignUpPage2";
     }
 
-    @PostMapping("SignUpPage")
+    @PostMapping("SignUpPage2")
     public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO, Model model){
+        UserAccount userAccount;
             userAccount = frontService.addUserAccountByMailAndPassword(signUpDTO);
         model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
         model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
@@ -51,6 +50,11 @@ public class FrontController {
             model.addAttribute("userAccount", userAccount);
             model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
             return "HomePage";
+    }
+
+    @GetMapping("/login")
+    public String getLogin(){
+        return "login";
     }
 
     @GetMapping("HomePage")
