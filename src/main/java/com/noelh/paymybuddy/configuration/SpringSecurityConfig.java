@@ -32,9 +32,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/",
-                        "/HomePage",
-                        "/UserTransferPage",
-                        "/BankTransferPage",
+                        "/Home",
+                        "/UserTransfer",
+                        "/BankTransfer",
                         "/FriendListPage",
                         "/BankListPage")
                 .authenticated()

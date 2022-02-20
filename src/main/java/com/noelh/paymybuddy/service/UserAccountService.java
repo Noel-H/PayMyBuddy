@@ -8,6 +8,8 @@ import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -108,7 +110,7 @@ public class UserAccountService {
 
     public void addWithdrawMoneyTransactionWithBank(UserAccount userAccount, MoneyTransactionWithBankAccount moneyTransactionWithBankAccount) {
         userAccount.getMoneyTransactionWithBankAccountList().add(moneyTransactionWithBankAccount);
-        userAccount.setBalance(userAccount.getBalance()+moneyTransactionWithBankAccount.getAmount());
+        userAccount.setBalance(userAccount.getBalance()+(moneyTransactionWithBankAccount.getAmount()-moneyTransactionWithBankAccount.getTaxAmount()));
         userAccountRepository.save(userAccount);
     }
 
@@ -116,5 +118,11 @@ public class UserAccountService {
         userAccount.getMoneyTransactionWithBankAccountList().add(moneyTransactionWithBankAccount);
         userAccount.setBalance(userAccount.getBalance()-(moneyTransactionWithBankAccount.getAmount()+moneyTransactionWithBankAccount.getTaxAmount()));
         userAccountRepository.save(userAccount);
+    }
+
+    public UserAccount findUserAccountByAuthentication(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserAccount userAccount = getUserAccountByLoginMail(authentication.getName());
+        return userAccount;
     }
 }
