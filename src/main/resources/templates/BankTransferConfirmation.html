@@ -15,30 +15,32 @@
     <div>
         <ul class="nav nav-tabs" style="align-content: center">
             <li class="nav-item">
-                <a class="nav-link" href="HomePage">Home</a>
+                <a class="nav-link" href="/Home">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled">User Transfer</a>
+                <a class="nav-link" href="/UserTransfer">User Transfer</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="BankTransferPage">Bank Transfer</a>
+                <a class="nav-link disabled">Bank Transfer</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="FriendListPage">Friend List</a>
+                <a class="nav-link" href="/FriendList">Friend List</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="BankListPage">Bank List</a>
+                <a class="nav-link" href="/BankList">Bank List</a>
             </li>
         </ul>
     </div>
     <nav class="nav">
         <a class="nav-link" style="color: black" th:text="${userAccount.loginMail}">????@????.????</a>
-        <a class="nav-link" href="DisconnectUser">
-            <button type="button" class="btn btn-outline-danger">
+        <form method="post" th:action="@{/logout}">
+            <button class="btn btn-outline-danger" type="submit">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
                     <path d="M7.5 1v7h1V1h-1z"/>
                     <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"/>
-                </svg></button></a>
+                </svg>
+            </button>
+        </form>
     </nav>
 </div>
 <div >
@@ -49,23 +51,28 @@
         <thead class="table-light">
         <tr>
             <th scope="col" style="width: 60%">
-                <form th:action="@{/UserTransferConfirmationPage}" th:object="${confirmMoneyTransactionWithUserAccountDTO}" method="POST">
+                <form th:action="@{/BankTransferConfirmation}" th:object="${confirmMoneyTransactionWithBankAccountDTO}" method="POST">
                     <div class="form-group row" style="text-align: center">
                             <div class="form-group">
-                                <label for="disabledTextInput" class="col-md-4 col-form-label text-md-right">Login/Mail</label>
-                                <input type="text" id="disabledTextInput" class="form-control" th:placeholder="${transactionRecap.getLoginMail()}" style="text-align: center" th:field="*{loginMail}" readonly>
+                                <label for="disabledTextInput" class="col-md-4 col-form-label text-md-right">Iban</label>
+                                <input type="text" id="disabledTextInput" class="form-control" style="text-align: center" th:field="*{iban}" readonly>
                             </div>
                         <div class="form-group">
                             <label for="disabledTextInput2" class="col-md-4 col-form-label text-md-right">Amount</label>
-                            <input type="text" id="disabledTextInput2" class="form-control" th:placeholder="${transactionRecap.getAmount()}" style="text-align: center" th:field="*{amount}" readonly>
+                            <input type="text" id="disabledTextInput2" class="form-control" style="text-align: center" th:field="*{amount}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <div><label for="disabledTextInput21" class="col-md-4 form-check-label text-md-right">Withdraw</label></div>
+                            <input type="checkbox" id="disabledTextInput21" class="form-check-input" th:checked="${withdrawStatus}" style="text-align: center" disabled>
+                            <input type="hidden" id="disabledTextInput210" class="form-check-input" style="text-align: center" th:field="*{withdraw}">
                         </div>
                         <div class="form-group">
                             <label for="disabledTextInput3" class="col-md-4 col-form-label text-md-right">Tax Amount</label>
-                            <input type="text" id="disabledTextInput3" class="form-control" th:placeholder="${test.taxAmount}" style="text-align: center" th:field="*{taxAmount}" readonly>
+                            <input type="text" id="disabledTextInput3" class="form-control" style="text-align: center" th:field="*{taxAmount}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="disabledTextInput4" class="col-md-4 col-form-label text-md-right">Total Amount</label>
-                            <input type="text" id="disabledTextInput4" class="form-control" th:placeholder="a" style="text-align: center" th:field="*{totalAmount}" readonly>
+                            <input type="text" id="disabledTextInput4" class="form-control" style="text-align: center" th:field="*{totalAmount}" readonly>
                         </div>
                         <div style="margin-top: 1%">
                             <button type="submit" class="btn btn-primary">

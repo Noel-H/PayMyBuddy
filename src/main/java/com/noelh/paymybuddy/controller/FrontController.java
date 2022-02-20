@@ -1,9 +1,8 @@
 package com.noelh.paymybuddy.controller;
 
 import com.noelh.paymybuddy.dto.*;
-import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
-import com.noelh.paymybuddy.service.FrontService;
+import com.noelh.paymybuddy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,230 +10,171 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.NoSuchElementException;
-
 @Controller
 public class FrontController {
-
-    UserAccount userAccount;
 
     @Autowired
     private FrontService frontService;
 
-    @GetMapping()
-    public String getSignInPage(Model model){
-        SignInDTO signInDTO = new SignInDTO();
-        model.addAttribute("signInDTO",signInDTO);
-        return "SignInPage";
+    @Autowired
+    private UserAccountService userAccountService;
+
+    @Autowired
+    private MoneyTransactionService moneyTransactionService;
+
+    @Autowired
+    private MoneyTransactionWithUserAccountService moneyTransactionWithUserAccountService;
+
+    @Autowired
+    private MoneyTransactionWithBankAccountService moneyTransactionWithBankAccountService;
+
+    @GetMapping("/")
+    public String getIndex(Model model){
+        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("transaction", moneyTransactionService.getMoneyTransactionListByUserAccountId(userAccount.getId()));
+        return "Home";
     }
 
-    @PostMapping()
-    public String submitSignInPage(@ModelAttribute("signInDTO") SignInDTO signInDTO, Model model){
-        try {
-            userAccount = frontService.getUserAccountByMailAndPassword(signInDTO);
-        } catch (NoSuchElementException e){
-            System.out.println(e.getMessage());
-            return "SignInPage";
-        }
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-        return "HomePage";
+    @GetMapping("/login")
+    public String getLogin(){
+        return "login";
     }
 
-    @GetMapping("SignUpPage")
+    @GetMapping("/SignUp")
     public String getSignUpPage(Model model){
-        SignUpDTO signUpDTO = new SignUpDTO();
-        model.addAttribute("signUpDTO", signUpDTO);
-        return "SignUpPage";
+        model.addAttribute("signUpDTO", new SignUpDTO());
+        return "SignUp";
     }
 
-    @PostMapping("SignUpPage")
-    public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO, Model model){
-        try {
-            userAccount = frontService.addUserAccountByMailAndPassword(signUpDTO);
-        } catch (IllegalArgumentException e){
+    @PostMapping("/SignUp")
+    public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO){
+        try{
+            frontService.addUserAccountByMailAndPassword(signUpDTO);
+        }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
-            return "SignUpPage";
+            return "SignUp";
         }
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-        return "HomePage";
+        return "login";
     }
 
-    @GetMapping("DisconnectUser")
-    public String DisconnectUser(Model model){
-        userAccount=null;
-        SignInDTO signInDTO = new SignInDTO();
-        model.addAttribute("signInDTO",signInDTO);
-        return "DisconnectUser";
+    @GetMapping("/Home")
+    public String getHome(Model model){
+        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("transaction", moneyTransactionService.getMoneyTransactionListByUserAccountId(userAccount.getId()));
+        return "Home";
     }
 
-    @GetMapping("HomePage")
-    public String getHomePage(Model model){
-        if (!frontService.isUserConnected(userAccount)){
-            SignInDTO signInDTO = new SignInDTO();
-            model.addAttribute("signInDTO",signInDTO);
-            return "SignInPage";
-        }
-        try {
-            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-            model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-            return "HomePage";
-        } catch (NoSuchElementException e){
+    @GetMapping("/UserTransfer")
+    public String getUserTransfer(Model model){
+        model.addAttribute("addMoneyTransactionWithUserAccountDTO", new AddMoneyTransactionWithUserAccountDTO());
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "UserTransfer";
+    }
+
+    @PostMapping("/UserTransfer")
+    public String submitUserTransfer(@ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
+                                     Model model){
+        confirmMoneyTransactionWithUserAccountDTO.setTaxAmount(moneyTransactionService.findTaxAmount(confirmMoneyTransactionWithUserAccountDTO.getAmount()));
+        confirmMoneyTransactionWithUserAccountDTO.setTotalAmount(confirmMoneyTransactionWithUserAccountDTO.getAmount()+confirmMoneyTransactionWithUserAccountDTO.getTaxAmount());
+        model.addAttribute("confirmTransactionRecap", confirmMoneyTransactionWithUserAccountDTO);
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "UserTransferConfirmation";
+    }
+
+    @PostMapping("/UserTransferConfirmation")
+    public String submitUserTransferConfirmation(@ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
+                                                 Model model){
+        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
+        try{
+            moneyTransactionWithUserAccountService.addMoneyTransactionWithUserAccount(userAccount.getId(),confirmMoneyTransactionWithUserAccountDTO);
+        }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
-            return "SignInPage";
+            model.addAttribute("addMoneyTransactionWithUserAccountDTO", new AddMoneyTransactionWithUserAccountDTO());
+            model.addAttribute("userAccount", userAccount);
+            return "UserTransfer";
         }
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("transaction", moneyTransactionService.getMoneyTransactionListByUserAccountId(userAccount.getId()));
+        return "Home";
     }
 
-    @GetMapping("UserTransferPage")
-    public String getUserTransferPage(Model model){
-        if (!frontService.isUserConnected(userAccount)){
-            SignInDTO signInDTO = new SignInDTO();
-            model.addAttribute("signInDTO",signInDTO);
-            return "SignInPage";
-        }
-        AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO = new AddMoneyTransactionWithUserAccountDTO();
-        model.addAttribute("addMoneyTransactionWithUserAccountDTO", addMoneyTransactionWithUserAccountDTO);
-        try {
-            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-            return "UserTransferPage";
-        } catch (NoSuchElementException e){
-            System.out.println(e.getMessage());
-            return "SignInPage";
-        }
+    @GetMapping("/BankTransfer")
+    public String getBankTransfer(Model model){
+        model.addAttribute("addMoneyTransactionWithBankAccountDTO", new AddMoneyTransactionWithBankAccountDTO());
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "BankTransfer";
     }
 
-    @PostMapping("UserTransferPage")
-    public String submitUserTransferPage(@ModelAttribute("addMoneyTransactionWithUserAccountDTO") AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO,
-                                         @ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
-                                         Model model){
-        confirmMoneyTransactionWithUserAccountDTO.setTaxAmount((addMoneyTransactionWithUserAccountDTO.getAmount()*0.5)/100);
-        confirmMoneyTransactionWithUserAccountDTO.setTotalAmount(addMoneyTransactionWithUserAccountDTO.getAmount()+confirmMoneyTransactionWithUserAccountDTO.getTaxAmount());
-        model.addAttribute("transactionRecap",addMoneyTransactionWithUserAccountDTO);
-        model.addAttribute("test", confirmMoneyTransactionWithUserAccountDTO);
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        return "UserTransferConfirmationPage";
-    }
-
-    @PostMapping("UserTransferConfirmationPage")
-    public String submitUserTransferConfirmationPage(@ModelAttribute("addMoneyTransactionWithUserAccountDTO") AddMoneyTransactionWithUserAccountDTO addMoneyTransactionWithUserAccountDTO,
-                                                     @ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
-                                                     Model model){
-        try {
-            frontService.addMoneyTransactionBetweenUser(userAccount.getId(),confirmMoneyTransactionWithUserAccountDTO);
-        } catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
-        }
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-        return "HomePage";
-    }
-
-    @GetMapping("BankTransferPage")
-    public String getBankTransferPage(Model model){
-        if (!frontService.isUserConnected(userAccount)){
-            SignInDTO signInDTO = new SignInDTO();
-            model.addAttribute("signInDTO",signInDTO);
-            return "SignInPage";
-        }
-        AddMoneyTransactionWithBankAccountDTO addMoneyTransactionWithBankAccountDTO = new AddMoneyTransactionWithBankAccountDTO();
-        model.addAttribute("addMoneyTransactionWithBankAccountDTO", addMoneyTransactionWithBankAccountDTO);
-        try {
-            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-            return "BankTransferPage";
-        } catch (NoSuchElementException e){
-            System.out.println(e.getMessage());
-            return "SignInPage";
-        }
-    }
-
-    @PostMapping("BankTransferPage")
-    public String submitBankTransferPage(@ModelAttribute("addMoneyTransactionWithBankAccountDTO") AddMoneyTransactionWithBankAccountDTO addMoneyTransactionWithBankAccountDTO,
-                                         @ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
-                                         Model model){
-        confirmMoneyTransactionWithBankAccountDTO.setTaxAmount((addMoneyTransactionWithBankAccountDTO.getAmount()*0.5)/100);
-        confirmMoneyTransactionWithBankAccountDTO.setTotalAmount(addMoneyTransactionWithBankAccountDTO.getAmount()+confirmMoneyTransactionWithBankAccountDTO.getTaxAmount());
-        model.addAttribute("transactionRecap",addMoneyTransactionWithBankAccountDTO);
-        model.addAttribute("test", confirmMoneyTransactionWithBankAccountDTO);
+    @PostMapping("/BankTransfer")
+    public String submitBankTransfer(@ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
+                                     Model model){
+        confirmMoneyTransactionWithBankAccountDTO.setTaxAmount(moneyTransactionService.findTaxAmount(confirmMoneyTransactionWithBankAccountDTO.getAmount()));
+        confirmMoneyTransactionWithBankAccountDTO.setTotalAmount(confirmMoneyTransactionWithBankAccountDTO.getAmount()+confirmMoneyTransactionWithBankAccountDTO.getTaxAmount());
+        model.addAttribute("confirmTransactionRecap",confirmMoneyTransactionWithBankAccountDTO);
         model.addAttribute("withdraw",confirmMoneyTransactionWithBankAccountDTO.isWithdraw());
-        model.addAttribute("withdrawStatus",frontService.getWithdrawStatus(confirmMoneyTransactionWithBankAccountDTO.isWithdraw()));
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        return "BankTransferConfirmationPage";
+        model.addAttribute("withdrawStatus",moneyTransactionWithBankAccountService.getWithdrawStatus(confirmMoneyTransactionWithBankAccountDTO.isWithdraw()));
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "BankTransferConfirmation";
     }
 
-    @PostMapping("BankTransferConfirmationPage")
-    public String submitBankTransferConfirmationPage(@ModelAttribute("addMoneyTransactionWithBankAccountDTO") AddMoneyTransactionWithBankAccountDTO addMoneyTransactionWithBankAccountDTO,
-                                                     @ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
-                                                     Model model){
+    @PostMapping("/BankTransferConfirmation")
+    public String submitBankTransferConfirmation(@ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
+                                                 Model model){
+        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try {
             frontService.addMoneyTransactionWithBank(userAccount.getId(),confirmMoneyTransactionWithBankAccountDTO);
-        } catch (IllegalArgumentException e){
+        }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
+            model.addAttribute("addMoneyTransactionWithBankAccountDTO", new AddMoneyTransactionWithBankAccountDTO());
+            model.addAttribute("userAccount", userAccount);
+            return "BankTransfer";
         }
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-        return "HomePage";
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("transaction", moneyTransactionService.getMoneyTransactionListByUserAccountId(userAccount.getId()));
+        return "Home";
     }
 
-    @GetMapping("FriendListPage")
+    @GetMapping("/FriendList")
     public String getFriendListPage(Model model){
-        if (!frontService.isUserConnected(userAccount)){
-            SignInDTO signInDTO = new SignInDTO();
-            model.addAttribute("signInDTO",signInDTO);
-            return "SignInPage";
-        }
-        AddFriendDTO addFriendDTO = new AddFriendDTO();
-        model.addAttribute("addFriendDTO",addFriendDTO);
-        try {
-            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-            model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
-            return "FriendListPage";
-        } catch (NoSuchElementException e){
-            System.out.println(e.getMessage());
-            return "SignInPage";
-        }
+        model.addAttribute("addFriendDTO", new AddFriendDTO());
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "FriendList";
     }
 
-    @PostMapping("FriendListPage")
+    @PostMapping("/FriendList")
     public String submitFriendListPage(@ModelAttribute("addFriendDTO") AddFriendDTO addFriendDTO, Model model){
-        try {
+        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
+        try{
             frontService.addFriendByUserAccountId(userAccount.getId(), addFriendDTO.getLoginMail());
-        } catch (IllegalArgumentException e){
+        }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
+            model.addAttribute("userAccount", userAccount);
+            return "FriendList";
         }
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
-        return "FriendListPage";
+        model.addAttribute("userAccount", userAccount);
+        return "FriendList";
     }
 
-    @GetMapping("BankListPage")
+    @GetMapping("/BankList")
     public String getBankListPagePage(Model model){
-        if (!frontService.isUserConnected(userAccount)){
-            SignInDTO signInDTO = new SignInDTO();
-            model.addAttribute("signInDTO",signInDTO);
-            return "SignInPage";
-        }
-        AddBankDTO addBankDTO = new AddBankDTO();
-        model.addAttribute("addBankDTO", addBankDTO);
-        try {
-            model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-            model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
-            return "BankListPage";
-        } catch (NoSuchElementException e){
-            System.out.println(e.getMessage());
-            return "SignInPage";
-        }
+        model.addAttribute("addBankDTO", new AddBankDTO());
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "BankList";
     }
 
-    @PostMapping("BankListPage")
+    @PostMapping("/BankList")
     public String submitBankListPage(@ModelAttribute("addBankDTO") AddBankDTO addBankDTO, Model model){
+        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try {
             frontService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
-        } catch (IllegalArgumentException e){
+        }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
+            model.addAttribute("userAccount", userAccount);
+            return "BankList";
         }
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
-        return "BankListPage";
+        model.addAttribute("userAccount", userAccount);
+        return "BankList";
     }
 }

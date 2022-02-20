@@ -34,12 +34,15 @@ public class MoneyTransactionWithBankAccountService {
         moneyTransactionWithBankAccount.setWithdraw(confirmMoneyTransactionWithBankAccountDTO.isWithdraw());
 
         userAccountService.addWithdrawMoneyTransactionWithBank(userAccountService.getUserAccount(id),moneyTransactionWithBankAccountRepository.save(moneyTransactionWithBankAccount));
-
     }
 
     public void addDepositMoneyTransaction(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) {
         if (!userAccountService.getUserAccount(id).getBankAccountList().contains(bankAccountService.getBankAccountByIban(confirmMoneyTransactionWithBankAccountDTO.getIban()))){
             throw new IllegalArgumentException("Bank "+confirmMoneyTransactionWithBankAccountDTO.getIban()+" is not in your bank account list");
+        }
+
+        if (userAccountService.getUserAccount(id).getBalance()<confirmMoneyTransactionWithBankAccountDTO.getTotalAmount()){
+            throw new IllegalArgumentException("Not enough Money in your account");
         }
 
         MoneyTransactionWithBankAccount moneyTransactionWithBankAccount = new MoneyTransactionWithBankAccount();
@@ -51,5 +54,13 @@ public class MoneyTransactionWithBankAccountService {
         moneyTransactionWithBankAccount.setWithdraw(confirmMoneyTransactionWithBankAccountDTO.isWithdraw());
 
         userAccountService.addDepositMoneyTransactionWithBank(userAccountService.getUserAccount(id),moneyTransactionWithBankAccountRepository.save(moneyTransactionWithBankAccount));
+    }
+
+    public String getWithdrawStatus(boolean withdraw) {
+        if (withdraw){
+            return "checked";
+        } else {
+            return null;
+        }
     }
 }
