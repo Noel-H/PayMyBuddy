@@ -1,9 +1,7 @@
 package com.noelh.paymybuddy.controller;
 
 import com.noelh.paymybuddy.dto.*;
-import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
-import com.noelh.paymybuddy.service.CustomUserDetailsService;
 import com.noelh.paymybuddy.service.FrontService;
 import com.noelh.paymybuddy.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.security.Principal;
-import java.util.NoSuchElementException;
-
 @Controller
 public class FrontController {
 
@@ -27,33 +22,34 @@ public class FrontController {
     @Autowired
     private UserAccountService userAccountService;
 
-    @GetMapping("SignUpPage")
-    public String getSignUpPage(Model model){
-        SignUpDTO signUpDTO = new SignUpDTO();
-        model.addAttribute("signUpDTO", signUpDTO);
-        return "SignUpPage2";
-    }
-
-    @PostMapping("SignUpPage2")
-    public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO, Model model){
-        UserAccount userAccount;
-            userAccount = frontService.addUserAccountByMailAndPassword(signUpDTO);
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-        return "login";
-    }
-
     @GetMapping("/")
     public String getIndex(Model model){
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            UserAccount userAccount = userAccountService.getUserAccountByLoginMail(authentication.getName());
-            model.addAttribute("userAccount", userAccount);
-            model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
-            return "HomePage";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserAccount userAccount = userAccountService.getUserAccountByLoginMail(authentication.getName());
+        model.addAttribute("userAccount", userAccount);
+        model.addAttribute("transaction", frontService.getMoneyTransactionListByUserId(userAccount.getId()));
+        return "HomePage";
     }
 
     @GetMapping("/login")
     public String getLogin(){
+        return "login";
+    }
+
+    @GetMapping("/SignUp")
+    public String getSignUpPage(Model model){
+        model.addAttribute("signUpDTO", new SignUpDTO());
+        return "SignUp";
+    }
+
+    @PostMapping("/SignUp")
+    public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO){
+        try{
+           frontService.addUserAccountByMailAndPassword(signUpDTO);
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return "SignUp";
+        }
         return "login";
     }
 
