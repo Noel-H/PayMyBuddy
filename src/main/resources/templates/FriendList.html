@@ -27,7 +27,7 @@
                 <a class="nav-link disabled">Friend List</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="BankListPage">Bank List</a>
+                <a class="nav-link" href="/BankList">Bank List</a>
             </li>
         </ul>
     </div>
@@ -51,7 +51,7 @@
         <thead class="table-light">
         <tr>
             <th scope="col" style="width: 60%">
-                <form th:action="@{/FriendListPage}" th:object="${addFriendDTO}" method="POST">
+                <form th:action="@{/FriendList}" th:object="${addFriendDTO}" method="POST">
                     <div class="form-group row" style="text-align: center">
                         <label for="email_address" class="col-md-4 col-form-label text-md-right">Login/Mail</label>
                         <div class="col-md-6">
@@ -72,7 +72,7 @@
 <div style="width: 50% ; margin-left: auto ; margin-right: auto">
     <table class="table table-bordered table-sm table-hover">
         <tbody>
-        <tr th:each="friend : ${friendList}" class="table-primary">
+        <tr th:each="friend : ${userAccount.getFriendList()}" class="table-primary">
             <td th:text="${friend.getLoginMail()}"></td>
         </tr>
         </tbody>

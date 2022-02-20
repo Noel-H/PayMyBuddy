@@ -35,8 +35,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/Home",
                         "/UserTransfer",
                         "/BankTransfer",
-                        "/FriendListPage",
-                        "/BankListPage")
+                        "/FriendList",
+                        "/BankList")
                 .authenticated()
                 .and()
                 .formLogin()

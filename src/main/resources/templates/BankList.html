@@ -24,7 +24,7 @@
                 <a class="nav-link" href="/BankTransfer">Bank Transfer</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="FriendListPage">Friend List</a>
+                <a class="nav-link" href="/FriendList">Friend List</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link disabled">Bank List</a>
@@ -51,7 +51,7 @@
         <thead class="table-light">
         <tr>
             <th scope="col" style="width: 60%">
-                <form th:action="@{/BankListPage}" th:object="${addBankDTO}" method="POST">
+                <form th:action="@{/BankList}" th:object="${addBankDTO}" method="POST">
                     <div class="form-group row" style="text-align: center">
                         <label for="email_address" class="col-md-4 col-form-label text-md-right">Iban</label>
                         <div class="col-md-6">
@@ -72,7 +72,7 @@
 <div style="width: 50% ; margin-left: auto ; margin-right: auto">
     <table class="table table-bordered table-sm table-hover">
         <tbody>
-        <tr th:each="bankAccount : ${bankAccountList}" class="table-primary">
+        <tr th:each="bankAccount : ${userAccount.getBankAccountList()}" class="table-primary">
             <td th:text="${bankAccount.getIban()}"></td>
         </tr>
         </tbody>

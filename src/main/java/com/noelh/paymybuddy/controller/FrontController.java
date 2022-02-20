@@ -136,41 +136,45 @@ public class FrontController {
         return "Home";
     }
 
-    @GetMapping("FriendListPage")
+    @GetMapping("/FriendList")
     public String getFriendListPage(Model model){
-        AddFriendDTO addFriendDTO = new AddFriendDTO();
-        model.addAttribute("addFriendDTO",addFriendDTO);
-        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
-        return "FriendListPage";
+        model.addAttribute("addFriendDTO", new AddFriendDTO());
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "FriendList";
     }
 
-    @PostMapping("FriendListPage")
+    @PostMapping("/FriendList")
     public String submitFriendListPage(@ModelAttribute("addFriendDTO") AddFriendDTO addFriendDTO, Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
-        frontService.addFriendByUserAccountId(userAccount.getId(), addFriendDTO.getLoginMail());
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("friendList",frontService.getFriendListByUser(userAccount));
-        return "FriendListPage";
-    }
-
-    @GetMapping("BankListPage")
-    public String getBankListPagePage(Model model){
-        AddBankDTO addBankDTO = new AddBankDTO();
-        model.addAttribute("addBankDTO", addBankDTO);
-        UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
+        try{
+            frontService.addFriendByUserAccountId(userAccount.getId(), addFriendDTO.getLoginMail());
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            model.addAttribute("userAccount", userAccount);
+            return "FriendList";
+        }
         model.addAttribute("userAccount", userAccount);
-        model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
-        return "BankListPage";
+        return "FriendList";
     }
 
-    @PostMapping("BankListPage")
+    @GetMapping("/BankList")
+    public String getBankListPagePage(Model model){
+        model.addAttribute("addBankDTO", new AddBankDTO());
+        model.addAttribute("userAccount", userAccountService.findUserAccountByAuthentication());
+        return "BankList";
+    }
+
+    @PostMapping("/BankList")
     public String submitBankListPage(@ModelAttribute("addBankDTO") AddBankDTO addBankDTO, Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
-        frontService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
-        model.addAttribute("userAccount", frontService.getUserAccountById(userAccount.getId()));
-        model.addAttribute("bankAccountList",frontService.getBankAccountListByUser(userAccount));
-        return "BankListPage";
+        try {
+            frontService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            model.addAttribute("userAccount", userAccount);
+            return "BankList";
+        }
+        model.addAttribute("userAccount", userAccount);
+        return "BankList";
     }
 }
