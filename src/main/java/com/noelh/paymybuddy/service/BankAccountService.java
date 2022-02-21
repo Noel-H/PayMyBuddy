@@ -15,13 +15,13 @@ public class BankAccountService {
         return bankAccountRepository.existsBankAccountByIban(iban);
     }
 
+    public BankAccount getBankAccountByIban(String iban){
+        return bankAccountRepository.getBankAccountByIban(iban);
+    }
+
     public BankAccount addBankAccount(String iban) {
         BankAccount bankAccount = new BankAccount();
         bankAccount.setIban(iban);
         return bankAccountRepository.save(bankAccount);
-    }
-
-    public BankAccount getBankAccountByIban(String iban){
-        return bankAccountRepository.getBankAccountByIban(iban);
     }
 }
