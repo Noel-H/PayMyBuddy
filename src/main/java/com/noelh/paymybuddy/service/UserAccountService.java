@@ -1,8 +1,6 @@
 package com.noelh.paymybuddy.service;
 
-import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
-import com.noelh.paymybuddy.model.BankAccount;
 import com.noelh.paymybuddy.model.MoneyTransactionWithBankAccount;
 import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
@@ -14,8 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class UserAccountService {
@@ -34,16 +30,7 @@ public class UserAccountService {
         return userAccountRepository.getUserAccountByLoginMail(loginMail);
     }
 
-    public boolean isUserConnected(UserAccount userAccount){
-        return userAccount != null;
-    }
-
-    public UserAccount getUserAccountByMailAndPassword(SignInDTO signInDTO) {
-        return userAccountRepository.findByLoginMailAndPassword(signInDTO.getLoginMail(),signInDTO.getPassword())
-                .orElseThrow(()-> new NoSuchElementException("Echec lors de la connexion !"));
-    }
-
-    public UserAccount addUserAccountByMailAndPassword(SignUpDTO signUpDTO) {
+    public void addUserAccountByMailAndPassword(SignUpDTO signUpDTO) throws IllegalArgumentException{
         if(userAccountRepository.existsUserAccountByLoginMail(signUpDTO.getLoginMail())){
             throw new IllegalArgumentException("The login "+signUpDTO.getLoginMail()+" is already taken");
         }
@@ -57,14 +44,10 @@ public class UserAccountService {
         userAccount.setBankAccountList(new ArrayList<>());
         userAccount.setMoneyTransactionWithBankAccountList(new ArrayList<>());
         userAccount.setMoneyTransactionWithUserAccountList(new ArrayList<>());
-        return userAccountRepository.save(userAccount);
+        userAccountRepository.save(userAccount);
     }
 
-    public List<BankAccount> getBankaccountListbyUser(UserAccount userAccount){
-        return userAccountRepository.getById(userAccount.getId()).getBankAccountList();
-    }
-
-    public boolean addBankAccountInUserAccount(Long userAccountId, String iban) {
+    public void addBankAccountByUserAccountId(Long userAccountId, String iban) throws IllegalArgumentException{
         if (getUserAccount(userAccountId).getBankAccountList().contains(bankAccountService.getBankAccountByIban(iban))){
             throw new IllegalArgumentException("The Bank Account "+iban+" is already added");
         }
@@ -73,14 +56,9 @@ public class UserAccountService {
         }
         getUserAccount(userAccountId).getBankAccountList().add(bankAccountService.addBankAccount(iban));
         userAccountRepository.save(getUserAccount(userAccountId));
-        return true;
     }
 
-    public List<UserAccount> getFriendListByUser(UserAccount userAccount) {
-        return userAccountRepository.getById(userAccount.getId()).getFriendList();
-    }
-
-    public void addFriendByUserAccountId(Long userAccountId, String loginMail) {
+    public void addFriendByUserAccountId(Long userAccountId, String loginMail) throws IllegalArgumentException{
         if (!userAccountRepository.existsUserAccountByLoginMail(loginMail)){
             throw new IllegalArgumentException("The login/Mail "+loginMail+" don't exist");
         }
@@ -122,7 +100,6 @@ public class UserAccountService {
 
     public UserAccount findUserAccountByAuthentication(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAccount userAccount = getUserAccountByLoginMail(authentication.getName());
-        return userAccount;
+        return getUserAccountByLoginMail(authentication.getName());
     }
 }

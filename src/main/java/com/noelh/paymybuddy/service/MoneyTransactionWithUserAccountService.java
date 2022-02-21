@@ -17,7 +17,7 @@ public class MoneyTransactionWithUserAccountService {
     @Autowired
     private UserAccountService userAccountService;
 
-    public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) {
+    public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) throws IllegalArgumentException{
         if (userAccountService.getUserAccount(id).getBalance()<confirmMoneyTransactionWithUserAccountDTO.getTotalAmount()){
             throw new IllegalArgumentException("Not enough money in your account");
         }
@@ -33,10 +33,10 @@ public class MoneyTransactionWithUserAccountService {
         moneyTransactionWithUserAccount.setSender(userAccountService.getUserAccount(id));
         moneyTransactionWithUserAccount.setReceiver(userAccountService.getUserAccountByLoginMail(confirmMoneyTransactionWithUserAccountDTO.getLoginMail()));
 
-       userAccountService.addMoneyTransactionWithUser(userAccountService.getUserAccount(id),
-               confirmMoneyTransactionWithUserAccountDTO.getTotalAmount(),
-               userAccountService.getUserAccountByLoginMail(confirmMoneyTransactionWithUserAccountDTO.getLoginMail()),
-               confirmMoneyTransactionWithUserAccountDTO.getAmount(),
-               moneyTransactionWithUserAccountRepository.save(moneyTransactionWithUserAccount));
+        userAccountService.addMoneyTransactionWithUser(userAccountService.getUserAccount(id),
+                confirmMoneyTransactionWithUserAccountDTO.getTotalAmount(),
+                userAccountService.getUserAccountByLoginMail(confirmMoneyTransactionWithUserAccountDTO.getLoginMail()),
+                confirmMoneyTransactionWithUserAccountDTO.getAmount(),
+                moneyTransactionWithUserAccountRepository.save(moneyTransactionWithUserAccount));
     }
 }
