@@ -1,8 +1,6 @@
 package com.noelh.paymybuddy.service;
 
-import com.noelh.paymybuddy.dto.SignInDTO;
 import com.noelh.paymybuddy.dto.SignUpDTO;
-import com.noelh.paymybuddy.model.BankAccount;
 import com.noelh.paymybuddy.model.MoneyTransactionWithBankAccount;
 import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.model.UserAccount;
@@ -14,8 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class UserAccountService {
