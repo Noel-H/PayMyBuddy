@@ -33,10 +33,10 @@ public class MoneyTransactionWithUserAccountService {
         moneyTransactionWithUserAccount.setSender(userAccountService.getUserAccount(id));
         moneyTransactionWithUserAccount.setReceiver(userAccountService.getUserAccountByLoginMail(confirmMoneyTransactionWithUserAccountDTO.getLoginMail()));
 
-       userAccountService.addMoneyTransactionWithUser(userAccountService.getUserAccount(id),
-               confirmMoneyTransactionWithUserAccountDTO.getTotalAmount(),
-               userAccountService.getUserAccountByLoginMail(confirmMoneyTransactionWithUserAccountDTO.getLoginMail()),
-               confirmMoneyTransactionWithUserAccountDTO.getAmount(),
-               moneyTransactionWithUserAccountRepository.save(moneyTransactionWithUserAccount));
+        userAccountService.addMoneyTransactionWithUser(userAccountService.getUserAccount(id),
+                confirmMoneyTransactionWithUserAccountDTO.getTotalAmount(),
+                userAccountService.getUserAccountByLoginMail(confirmMoneyTransactionWithUserAccountDTO.getLoginMail()),
+                confirmMoneyTransactionWithUserAccountDTO.getAmount(),
+                moneyTransactionWithUserAccountRepository.save(moneyTransactionWithUserAccount));
     }
 }
