@@ -20,6 +20,14 @@ public class MoneyTransactionWithBankAccountService {
     @Autowired
     private BankAccountService bankAccountService;
 
+    public void addMoneyTransactionWithBank(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) {
+        if (confirmMoneyTransactionWithBankAccountDTO.isWithdraw()){
+            addWithdrawMoneyTransaction(id,confirmMoneyTransactionWithBankAccountDTO);
+        } else {
+            addDepositMoneyTransaction(id,confirmMoneyTransactionWithBankAccountDTO);
+        }
+    }
+
     public void addWithdrawMoneyTransaction(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) {
         if (!userAccountService.getUserAccount(id).getBankAccountList().contains(bankAccountService.getBankAccountByIban(confirmMoneyTransactionWithBankAccountDTO.getIban()))){
             throw new IllegalArgumentException("Bank "+confirmMoneyTransactionWithBankAccountDTO.getIban()+" is not in your bank account list");

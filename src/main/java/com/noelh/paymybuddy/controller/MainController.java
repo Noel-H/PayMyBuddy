@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class FrontController {
-
-    @Autowired
-    private FrontService frontService;
+public class MainController {
 
     @Autowired
     private UserAccountService userAccountService;
@@ -50,7 +47,7 @@ public class FrontController {
     @PostMapping("/SignUp")
     public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO){
         try{
-            frontService.addUserAccountByMailAndPassword(signUpDTO);
+            userAccountService.addUserAccountByMailAndPassword(signUpDTO);
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             return "SignUp";
@@ -124,7 +121,7 @@ public class FrontController {
                                                  Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try {
-            frontService.addMoneyTransactionWithBank(userAccount.getId(),confirmMoneyTransactionWithBankAccountDTO);
+            moneyTransactionWithBankAccountService.addMoneyTransactionWithBank(userAccount.getId(),confirmMoneyTransactionWithBankAccountDTO);
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             model.addAttribute("addMoneyTransactionWithBankAccountDTO", new AddMoneyTransactionWithBankAccountDTO());
@@ -147,7 +144,7 @@ public class FrontController {
     public String submitFriendListPage(@ModelAttribute("addFriendDTO") AddFriendDTO addFriendDTO, Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try{
-            frontService.addFriendByUserAccountId(userAccount.getId(), addFriendDTO.getLoginMail());
+            userAccountService.addFriendByUserAccountId(userAccount.getId(), addFriendDTO.getLoginMail());
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             model.addAttribute("userAccount", userAccount);
@@ -168,7 +165,7 @@ public class FrontController {
     public String submitBankListPage(@ModelAttribute("addBankDTO") AddBankDTO addBankDTO, Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try {
-            frontService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
+            userAccountService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             model.addAttribute("userAccount", userAccount);

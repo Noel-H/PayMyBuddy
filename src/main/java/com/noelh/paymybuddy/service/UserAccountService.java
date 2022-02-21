@@ -34,15 +34,6 @@ public class UserAccountService {
         return userAccountRepository.getUserAccountByLoginMail(loginMail);
     }
 
-    public boolean isUserConnected(UserAccount userAccount){
-        return userAccount != null;
-    }
-
-    public UserAccount getUserAccountByMailAndPassword(SignInDTO signInDTO) {
-        return userAccountRepository.findByLoginMailAndPassword(signInDTO.getLoginMail(),signInDTO.getPassword())
-                .orElseThrow(()-> new NoSuchElementException("Echec lors de la connexion !"));
-    }
-
     public UserAccount addUserAccountByMailAndPassword(SignUpDTO signUpDTO) {
         if(userAccountRepository.existsUserAccountByLoginMail(signUpDTO.getLoginMail())){
             throw new IllegalArgumentException("The login "+signUpDTO.getLoginMail()+" is already taken");
@@ -60,11 +51,7 @@ public class UserAccountService {
         return userAccountRepository.save(userAccount);
     }
 
-    public List<BankAccount> getBankaccountListbyUser(UserAccount userAccount){
-        return userAccountRepository.getById(userAccount.getId()).getBankAccountList();
-    }
-
-    public boolean addBankAccountInUserAccount(Long userAccountId, String iban) {
+    public boolean addBankAccountByUserAccountId(Long userAccountId, String iban) {
         if (getUserAccount(userAccountId).getBankAccountList().contains(bankAccountService.getBankAccountByIban(iban))){
             throw new IllegalArgumentException("The Bank Account "+iban+" is already added");
         }
@@ -74,10 +61,6 @@ public class UserAccountService {
         getUserAccount(userAccountId).getBankAccountList().add(bankAccountService.addBankAccount(iban));
         userAccountRepository.save(getUserAccount(userAccountId));
         return true;
-    }
-
-    public List<UserAccount> getFriendListByUser(UserAccount userAccount) {
-        return userAccountRepository.getById(userAccount.getId()).getFriendList();
     }
 
     public void addFriendByUserAccountId(Long userAccountId, String loginMail) {
