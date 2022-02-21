@@ -26,12 +26,12 @@ public class MoneyTransactionService {
     public List<MoneyTransactionDTO> getMoneyTransactionListByUserAccountId(long id){
         List<MoneyTransactionDTO> moneyTransactionDTOList = new ArrayList<>();
 
-        List<MoneyTransactionDTO> moneyTransactionWithBankAccountListDTOList = mapToMoneyTransaction(userAccountService.getUserAccount(id).getMoneyTransactionWithBankAccountList());
+        List<MoneyTransactionDTO> moneyTransactionDTOFromBank = mapToMoneyTransaction(userAccountService.getUserAccount(id).getMoneyTransactionWithBankAccountList());
 
-        List<MoneyTransactionDTO> moneyTransactionWithUserAccountListDTOList = mapToMoneyTransaction(id, userAccountService.getUserAccount(id).getMoneyTransactionWithUserAccountList());
+        List<MoneyTransactionDTO> moneyTransactionDTOFromUser = mapToMoneyTransaction(id, userAccountService.getUserAccount(id).getMoneyTransactionWithUserAccountList());
 
-        moneyTransactionDTOList.addAll(moneyTransactionWithBankAccountListDTOList);
-        moneyTransactionDTOList.addAll(moneyTransactionWithUserAccountListDTOList);
+        moneyTransactionDTOList.addAll(moneyTransactionDTOFromBank);
+        moneyTransactionDTOList.addAll(moneyTransactionDTOFromUser);
         moneyTransactionDTOList.sort(Comparator.comparing(MoneyTransactionDTO::getDate).reversed());
         return moneyTransactionDTOList;
     }

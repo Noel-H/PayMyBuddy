@@ -30,7 +30,7 @@ public class UserAccountService {
         return userAccountRepository.getUserAccountByLoginMail(loginMail);
     }
 
-    public UserAccount addUserAccountByMailAndPassword(SignUpDTO signUpDTO) {
+    public void addUserAccountByMailAndPassword(SignUpDTO signUpDTO) throws IllegalArgumentException{
         if(userAccountRepository.existsUserAccountByLoginMail(signUpDTO.getLoginMail())){
             throw new IllegalArgumentException("The login "+signUpDTO.getLoginMail()+" is already taken");
         }
@@ -44,10 +44,10 @@ public class UserAccountService {
         userAccount.setBankAccountList(new ArrayList<>());
         userAccount.setMoneyTransactionWithBankAccountList(new ArrayList<>());
         userAccount.setMoneyTransactionWithUserAccountList(new ArrayList<>());
-        return userAccountRepository.save(userAccount);
+        userAccountRepository.save(userAccount);
     }
 
-    public boolean addBankAccountByUserAccountId(Long userAccountId, String iban) {
+    public void addBankAccountByUserAccountId(Long userAccountId, String iban) throws IllegalArgumentException{
         if (getUserAccount(userAccountId).getBankAccountList().contains(bankAccountService.getBankAccountByIban(iban))){
             throw new IllegalArgumentException("The Bank Account "+iban+" is already added");
         }
@@ -56,10 +56,9 @@ public class UserAccountService {
         }
         getUserAccount(userAccountId).getBankAccountList().add(bankAccountService.addBankAccount(iban));
         userAccountRepository.save(getUserAccount(userAccountId));
-        return true;
     }
 
-    public void addFriendByUserAccountId(Long userAccountId, String loginMail) {
+    public void addFriendByUserAccountId(Long userAccountId, String loginMail) throws IllegalArgumentException{
         if (!userAccountRepository.existsUserAccountByLoginMail(loginMail)){
             throw new IllegalArgumentException("The login/Mail "+loginMail+" don't exist");
         }
@@ -101,7 +100,6 @@ public class UserAccountService {
 
     public UserAccount findUserAccountByAuthentication(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAccount userAccount = getUserAccountByLoginMail(authentication.getName());
-        return userAccount;
+        return getUserAccountByLoginMail(authentication.getName());
     }
 }

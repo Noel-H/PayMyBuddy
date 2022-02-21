@@ -17,7 +17,7 @@ public class MoneyTransactionWithUserAccountService {
     @Autowired
     private UserAccountService userAccountService;
 
-    public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) {
+    public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) throws IllegalArgumentException{
         if (userAccountService.getUserAccount(id).getBalance()<confirmMoneyTransactionWithUserAccountDTO.getTotalAmount()){
             throw new IllegalArgumentException("Not enough money in your account");
         }
