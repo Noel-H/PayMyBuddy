@@ -1,5 +1,7 @@
 package com.noelh.paymybuddy.service;
 
+import com.noelh.paymybuddy.customexception.NotEnoughMoneyException;
+import com.noelh.paymybuddy.customexception.UserAccountNotFoundException;
 import com.noelh.paymybuddy.dto.ConfirmMoneyTransactionWithUserAccountDTO;
 import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.repository.MoneyTransactionWithUserAccountRepository;
@@ -17,13 +19,13 @@ public class MoneyTransactionWithUserAccountService {
     @Autowired
     private UserAccountService userAccountService;
 
-    public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) throws IllegalArgumentException{
+    public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) throws NotEnoughMoneyException, UserAccountNotFoundException {
         if (userAccountService.getUserAccount(id).getBalance()<confirmMoneyTransactionWithUserAccountDTO.getTotalAmount()){
-            throw new IllegalArgumentException("Not enough money in your account");
+            throw new NotEnoughMoneyException("Not enough money in your account");
         }
 
         if (!userAccountService.existsUserAccountByLoginMail(confirmMoneyTransactionWithUserAccountDTO.getLoginMail())){
-            throw new IllegalArgumentException("User "+confirmMoneyTransactionWithUserAccountDTO.getLoginMail()+" don't exist");
+            throw new UserAccountNotFoundException("User "+confirmMoneyTransactionWithUserAccountDTO.getLoginMail()+" don't exist");
         }
 
         MoneyTransactionWithUserAccount moneyTransactionWithUserAccount = new MoneyTransactionWithUserAccount();

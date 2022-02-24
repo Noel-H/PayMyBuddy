@@ -1,5 +1,6 @@
 package com.noelh.paymybuddy.service;
 
+import com.noelh.paymybuddy.customexception.*;
 import com.noelh.paymybuddy.dto.SignUpDTO;
 import com.noelh.paymybuddy.model.MoneyTransactionWithBankAccount;
 import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
@@ -30,9 +31,9 @@ public class UserAccountService {
         return userAccountRepository.getUserAccountByLoginMail(loginMail);
     }
 
-    public void addUserAccountByMailAndPassword(SignUpDTO signUpDTO) throws IllegalArgumentException{
+    public void addUserAccountByMailAndPassword(SignUpDTO signUpDTO) throws IllegalArgumentException, LoginMailAlreadyExistException {
         if(userAccountRepository.existsUserAccountByLoginMail(signUpDTO.getLoginMail())){
-            throw new IllegalArgumentException("The login "+signUpDTO.getLoginMail()+" is already taken");
+            throw new LoginMailAlreadyExistException("The login "+signUpDTO.getLoginMail()+" is already taken");
         }
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -47,23 +48,23 @@ public class UserAccountService {
         userAccountRepository.save(userAccount);
     }
 
-    public void addBankAccountByUserAccountId(Long userAccountId, String iban) throws IllegalArgumentException{
+    public void addBankAccountByUserAccountId(Long userAccountId, String iban) throws BankAccountAlreadyAddedException, BankAccountAlreadyUsedException {
         if (getUserAccount(userAccountId).getBankAccountList().contains(bankAccountService.getBankAccountByIban(iban))){
-            throw new IllegalArgumentException("The Bank Account "+iban+" is already added");
+            throw new BankAccountAlreadyAddedException("The Bank Account "+iban+" is already added");
         }
         if (bankAccountService.isBankAccountExist(iban)){
-            throw new IllegalArgumentException("The Bank Account "+iban+" is already used");
+            throw new BankAccountAlreadyUsedException("The Bank Account "+iban+" is already used");
         }
         getUserAccount(userAccountId).getBankAccountList().add(bankAccountService.addBankAccount(iban));
         userAccountRepository.save(getUserAccount(userAccountId));
     }
 
-    public void addFriendByUserAccountId(Long userAccountId, String loginMail) throws IllegalArgumentException{
+    public void addFriendByUserAccountId(Long userAccountId, String loginMail) throws UserAccountNotFoundException, LoginMailAlreadyAddedException {
         if (!userAccountRepository.existsUserAccountByLoginMail(loginMail)){
-            throw new IllegalArgumentException("The login/Mail "+loginMail+" don't exist");
+            throw new UserAccountNotFoundException("The login/Mail "+loginMail+" don't exist");
         }
         if (getUserAccount(userAccountId).getFriendList().contains(getUserAccountByLoginMail(loginMail))){
-            throw new IllegalArgumentException("The login/Mail "+loginMail+" is already added");
+            throw new LoginMailAlreadyAddedException("The login/Mail "+loginMail+" is already added");
         }
         getUserAccount(userAccountId).getFriendList().add(getUserAccountByLoginMail(loginMail));
         userAccountRepository.save(getUserAccount(userAccountId));

@@ -1,5 +1,7 @@
 package com.noelh.paymybuddy.service;
 
+import com.noelh.paymybuddy.customexception.BankNotFoundInBankAccountListException;
+import com.noelh.paymybuddy.customexception.NotEnoughMoneyException;
 import com.noelh.paymybuddy.dto.ConfirmMoneyTransactionWithBankAccountDTO;
 import com.noelh.paymybuddy.model.MoneyTransactionWithBankAccount;
 import com.noelh.paymybuddy.repository.MoneyTransactionWithBankAccountRepository;
@@ -20,7 +22,7 @@ public class MoneyTransactionWithBankAccountService {
     @Autowired
     private BankAccountService bankAccountService;
 
-    public void addMoneyTransactionWithBank(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) throws IllegalArgumentException{
+    public void addMoneyTransactionWithBank(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) throws BankNotFoundInBankAccountListException, NotEnoughMoneyException {
         if (confirmMoneyTransactionWithBankAccountDTO.isWithdraw()){
             addWithdrawMoneyTransaction(id,confirmMoneyTransactionWithBankAccountDTO);
         } else {
@@ -28,9 +30,9 @@ public class MoneyTransactionWithBankAccountService {
         }
     }
 
-    public void addWithdrawMoneyTransaction(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) throws IllegalArgumentException{
+    public void addWithdrawMoneyTransaction(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) throws BankNotFoundInBankAccountListException {
         if (!userAccountService.getUserAccount(id).getBankAccountList().contains(bankAccountService.getBankAccountByIban(confirmMoneyTransactionWithBankAccountDTO.getIban()))){
-            throw new IllegalArgumentException("Bank "+confirmMoneyTransactionWithBankAccountDTO.getIban()+" is not in your bank account list");
+            throw new BankNotFoundInBankAccountListException("Bank "+confirmMoneyTransactionWithBankAccountDTO.getIban()+" is not in your bank account list");
         }
 
         MoneyTransactionWithBankAccount moneyTransactionWithBankAccount = mapToMoneyTransactionWithBankAccount(id,confirmMoneyTransactionWithBankAccountDTO);
@@ -38,13 +40,13 @@ public class MoneyTransactionWithBankAccountService {
         userAccountService.addWithdrawMoneyTransactionWithBank(userAccountService.getUserAccount(id),moneyTransactionWithBankAccountRepository.save(moneyTransactionWithBankAccount));
     }
 
-    public void addDepositMoneyTransaction(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) throws IllegalArgumentException{
+    public void addDepositMoneyTransaction(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) throws BankNotFoundInBankAccountListException, NotEnoughMoneyException {
         if (!userAccountService.getUserAccount(id).getBankAccountList().contains(bankAccountService.getBankAccountByIban(confirmMoneyTransactionWithBankAccountDTO.getIban()))){
-            throw new IllegalArgumentException("Bank "+confirmMoneyTransactionWithBankAccountDTO.getIban()+" is not in your bank account list");
+            throw new BankNotFoundInBankAccountListException("Bank "+confirmMoneyTransactionWithBankAccountDTO.getIban()+" is not in your bank account list");
         }
 
         if (userAccountService.getUserAccount(id).getBalance()<confirmMoneyTransactionWithBankAccountDTO.getTotalAmount()){
-            throw new IllegalArgumentException("Not enough Money in your account");
+            throw new NotEnoughMoneyException("Not enough Money in your account");
         }
 
         MoneyTransactionWithBankAccount moneyTransactionWithBankAccount = mapToMoneyTransactionWithBankAccount(id, confirmMoneyTransactionWithBankAccountDTO);

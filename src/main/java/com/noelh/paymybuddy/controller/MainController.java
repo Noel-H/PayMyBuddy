@@ -1,5 +1,6 @@
 package com.noelh.paymybuddy.controller;
 
+import com.noelh.paymybuddy.customexception.*;
 import com.noelh.paymybuddy.dto.*;
 import com.noelh.paymybuddy.model.UserAccount;
 import com.noelh.paymybuddy.service.*;
@@ -48,7 +49,7 @@ public class MainController {
     public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO){
         try{
             userAccountService.addUserAccountByMailAndPassword(signUpDTO);
-        }catch (IllegalArgumentException e){
+        }catch (LoginMailAlreadyExistException e){
             System.out.println(e.getMessage());
             return "SignUp";
         }
@@ -86,7 +87,7 @@ public class MainController {
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try{
             moneyTransactionWithUserAccountService.addMoneyTransactionWithUserAccount(userAccount.getId(),confirmMoneyTransactionWithUserAccountDTO);
-        }catch (IllegalArgumentException e){
+        }catch (NotEnoughMoneyException | UserAccountNotFoundException e){
             System.out.println(e.getMessage());
             model.addAttribute("addMoneyTransactionWithUserAccountDTO", new AddMoneyTransactionWithUserAccountDTO());
             model.addAttribute("userAccount", userAccount);
@@ -122,7 +123,7 @@ public class MainController {
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try {
             moneyTransactionWithBankAccountService.addMoneyTransactionWithBank(userAccount.getId(),confirmMoneyTransactionWithBankAccountDTO);
-        }catch (IllegalArgumentException e){
+        }catch (BankNotFoundInBankAccountListException | NotEnoughMoneyException e){
             System.out.println(e.getMessage());
             model.addAttribute("addMoneyTransactionWithBankAccountDTO", new AddMoneyTransactionWithBankAccountDTO());
             model.addAttribute("userAccount", userAccount);
@@ -145,7 +146,7 @@ public class MainController {
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try{
             userAccountService.addFriendByUserAccountId(userAccount.getId(), addFriendDTO.getLoginMail());
-        }catch (IllegalArgumentException e){
+        }catch (UserAccountNotFoundException | LoginMailAlreadyAddedException e){
             System.out.println(e.getMessage());
             model.addAttribute("userAccount", userAccount);
             return "FriendList";
@@ -166,7 +167,7 @@ public class MainController {
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         try {
             userAccountService.addBankAccountByUserAccountId(userAccount.getId(), addBankDTO.getIban());
-        }catch (IllegalArgumentException e){
+        }catch (BankAccountAlreadyAddedException | BankAccountAlreadyUsedException e){
             System.out.println(e.getMessage());
             model.addAttribute("userAccount", userAccount);
             return "BankList";
