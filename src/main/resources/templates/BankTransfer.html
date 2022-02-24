@@ -59,7 +59,7 @@
                         </div>
                         <label for="amount" class="col-md-4 col-form-label text-md-right">Amount</label>
                         <div class="col-md-6" style="margin-bottom: 1%">
-                            <input type="text" id="amount" class="form-control" name="email-address" th:field="*{amount}" required autofocus>
+                            <input type="text" id="amount" class="form-control" name="email-address" th:field="*{amount}" required autofocus pattern="[0-9]+(\.[0-9]{1,2})?" title="Exemples: 10 ou 10.55">
                         </div>
                         <label for="exampleCheck1" class="col-md-4 form-check-label text-md-right">Withdraw</label>
                         <div class="col-md-1">
