@@ -7,6 +7,6 @@ public class BankNotFoundInBankAccountListException extends Exception{
     }
 
     public BankNotFoundInBankAccountListException(String s){
-        super();
+        super(s);
     }
 }
