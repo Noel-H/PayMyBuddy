@@ -80,27 +80,31 @@ public class UserAccountService {
                                             double moneyReceive,
                                             MoneyTransactionWithUserAccount moneyTransactionWithUserAccount) {
         userAccount1.getMoneyTransactionWithUserAccountList().add(moneyTransactionWithUserAccount);
-        userAccount1.setBalance(userAccount1.getBalance()-moneySend);
+        userAccount1.setBalance(roundedAmount(userAccount1.getBalance()-moneySend));
         userAccount2.getMoneyTransactionWithUserAccountList().add(moneyTransactionWithUserAccount);
-        userAccount2.setBalance(userAccount2.getBalance()+moneyReceive);
+        userAccount2.setBalance(roundedAmount(userAccount2.getBalance()+moneyReceive));
         userAccountRepository.save(userAccount1);
         userAccountRepository.save(userAccount2);
     }
 
     public void addWithdrawMoneyTransactionWithBank(UserAccount userAccount, MoneyTransactionWithBankAccount moneyTransactionWithBankAccount) {
         userAccount.getMoneyTransactionWithBankAccountList().add(moneyTransactionWithBankAccount);
-        userAccount.setBalance(userAccount.getBalance()+(moneyTransactionWithBankAccount.getAmount()-moneyTransactionWithBankAccount.getTaxAmount()));
+        userAccount.setBalance(roundedAmount(userAccount.getBalance()+(moneyTransactionWithBankAccount.getAmount()-moneyTransactionWithBankAccount.getTaxAmount())));
         userAccountRepository.save(userAccount);
     }
 
     public void addDepositMoneyTransactionWithBank(UserAccount userAccount, MoneyTransactionWithBankAccount moneyTransactionWithBankAccount) {
         userAccount.getMoneyTransactionWithBankAccountList().add(moneyTransactionWithBankAccount);
-        userAccount.setBalance(userAccount.getBalance()-(moneyTransactionWithBankAccount.getAmount()+moneyTransactionWithBankAccount.getTaxAmount()));
+        userAccount.setBalance(roundedAmount(userAccount.getBalance()-(moneyTransactionWithBankAccount.getAmount()+moneyTransactionWithBankAccount.getTaxAmount())));
         userAccountRepository.save(userAccount);
     }
 
     public UserAccount findUserAccountByAuthentication(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return getUserAccountByLoginMail(authentication.getName());
+    }
+
+    public double roundedAmount(double amount){
+        return Math.round(amount*100)/100.0;
     }
 }

@@ -85,8 +85,8 @@ public class MainController {
                                      Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         log.info("POST /UserTransfer : Id = "+userAccount.getId());
-        confirmMoneyTransactionWithUserAccountDTO.setTaxAmount(moneyTransactionService.findTaxAmount(confirmMoneyTransactionWithUserAccountDTO.getAmount()));
-        confirmMoneyTransactionWithUserAccountDTO.setTotalAmount(confirmMoneyTransactionWithUserAccountDTO.getAmount()+confirmMoneyTransactionWithUserAccountDTO.getTaxAmount());
+        confirmMoneyTransactionWithUserAccountDTO.setTaxAmount(userAccountService.roundedAmount(moneyTransactionService.findTaxAmount(confirmMoneyTransactionWithUserAccountDTO.getAmount())));
+        confirmMoneyTransactionWithUserAccountDTO.setTotalAmount(userAccountService.roundedAmount(confirmMoneyTransactionWithUserAccountDTO.getAmount()+confirmMoneyTransactionWithUserAccountDTO.getTaxAmount()));
         model.addAttribute("confirmTransactionRecap", confirmMoneyTransactionWithUserAccountDTO);
         model.addAttribute("userAccount", userAccount);
         return "UserTransferConfirmation";
@@ -124,8 +124,8 @@ public class MainController {
                                      Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
         log.info("POST /BankTransfer : Id = "+userAccount.getId());
-        confirmMoneyTransactionWithBankAccountDTO.setTaxAmount(moneyTransactionService.findTaxAmount(confirmMoneyTransactionWithBankAccountDTO.getAmount()));
-        confirmMoneyTransactionWithBankAccountDTO.setTotalAmount(confirmMoneyTransactionWithBankAccountDTO.getAmount()+confirmMoneyTransactionWithBankAccountDTO.getTaxAmount());
+        confirmMoneyTransactionWithBankAccountDTO.setTaxAmount(userAccountService.roundedAmount(moneyTransactionService.findTaxAmount(confirmMoneyTransactionWithBankAccountDTO.getAmount())));
+        confirmMoneyTransactionWithBankAccountDTO.setTotalAmount(userAccountService.roundedAmount(confirmMoneyTransactionWithBankAccountDTO.getAmount()+confirmMoneyTransactionWithBankAccountDTO.getTaxAmount()));
         model.addAttribute("confirmTransactionRecap",confirmMoneyTransactionWithBankAccountDTO);
         model.addAttribute("withdraw",confirmMoneyTransactionWithBankAccountDTO.isWithdraw());
         model.addAttribute("withdrawStatus",moneyTransactionWithBankAccountService.getWithdrawStatus(confirmMoneyTransactionWithBankAccountDTO.isWithdraw()));

@@ -20,7 +20,7 @@ public class MoneyTransactionService {
     private static final double TAX_NUMBER = 0.5;
 
     public double findTaxAmount(double amount){
-        return (amount*TAX_NUMBER)/100;
+        return userAccountService.roundedAmount((amount*TAX_NUMBER)/100);
     }
 
     public List<MoneyTransactionDTO> getMoneyTransactionListByUserAccountId(long id){
@@ -47,8 +47,8 @@ public class MoneyTransactionService {
                         moneyTransactionWithBankAccount.getWithdraw() ? "+" : "-",
                         false,
                         moneyTransactionWithBankAccount.getWithdraw() ?
-                                moneyTransactionWithBankAccount.getAmount()-(findTaxAmount(moneyTransactionWithBankAccount.getAmount())) :
-                                moneyTransactionWithBankAccount.getAmount()+(findTaxAmount(moneyTransactionWithBankAccount.getAmount()))
+                                userAccountService.roundedAmount(moneyTransactionWithBankAccount.getAmount()-(findTaxAmount(moneyTransactionWithBankAccount.getAmount()))) :
+                                userAccountService.roundedAmount(moneyTransactionWithBankAccount.getAmount()+(findTaxAmount(moneyTransactionWithBankAccount.getAmount())))
                 ))
                 .collect(Collectors.toList());
     }
@@ -65,7 +65,7 @@ public class MoneyTransactionService {
                         moneyTransactionWithUserAccount.getSender().getLoginMail().equals(userAccountService.getUserAccount(id).getLoginMail()) ? "table-danger" : "table-success",
                         moneyTransactionWithUserAccount.getSender().getLoginMail().equals(userAccountService.getUserAccount(id).getLoginMail()) ? "-" : "+",
                         true,
-                        moneyTransactionWithUserAccount.getAmount()+(findTaxAmount(moneyTransactionWithUserAccount.getAmount()))
+                        userAccountService.roundedAmount(moneyTransactionWithUserAccount.getAmount()+(findTaxAmount(moneyTransactionWithUserAccount.getAmount())))
                 ))
                 .collect(Collectors.toList());
     }
