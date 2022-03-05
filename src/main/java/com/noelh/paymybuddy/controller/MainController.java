@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+/**
+ * Main Controller
+ */
 @Slf4j
 @Controller
 public class MainController {
@@ -28,6 +31,11 @@ public class MainController {
     @Autowired
     private MoneyTransactionWithBankAccountService moneyTransactionWithBankAccountService;
 
+    /**
+     * Get / page
+     * @param model used for the html template
+     * @return Home.html
+     */
     @GetMapping("/")
     public String getIndex(Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
@@ -37,12 +45,21 @@ public class MainController {
         return "Home";
     }
 
+    /**
+     * Get login page
+     * @return login.html
+     */
     @GetMapping("/login")
     public String getLogin(){
         log.info("GET /login");
         return "login";
     }
 
+    /**
+     * Get Sign up page
+     * @param model used for the html template
+     * @return SignUp.html
+     */
     @GetMapping("/SignUp")
     public String getSignUpPage(Model model){
         log.info("GET /SignUp");
@@ -50,6 +67,11 @@ public class MainController {
         return "SignUp";
     }
 
+    /**
+     * Post request to add a new account
+     * @param signUpDTO used for the html template
+     * @return login.html or SignUp.html if an error is caught
+     */
     @PostMapping("/SignUp")
     public String submitSignUpPage(@ModelAttribute("signUpDTO") SignUpDTO signUpDTO){
         log.info("POST /SignUp");
@@ -62,6 +84,11 @@ public class MainController {
         return "login";
     }
 
+    /**
+     * Get Home page
+     * @param model used for the html template
+     * @return Home.html
+     */
     @GetMapping("/Home")
     public String getHome(Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
@@ -71,6 +98,11 @@ public class MainController {
         return "Home";
     }
 
+    /**
+     * Get The User Transfer page
+     * @param model used for the html template
+     * @return UserTransfer.html
+     */
     @GetMapping("/UserTransfer")
     public String getUserTransfer(Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
@@ -80,6 +112,12 @@ public class MainController {
         return "UserTransfer";
     }
 
+    /**
+     * Post request to confirm a user transaction
+     * @param confirmMoneyTransactionWithUserAccountDTO used for the html template
+     * @param model used for the html template
+     * @return UserTransferConfirmation.html
+     */
     @PostMapping("/UserTransfer")
     public String submitUserTransfer(@ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
                                      Model model){
@@ -92,6 +130,12 @@ public class MainController {
         return "UserTransferConfirmation";
     }
 
+    /**
+     * Post request to add a new user transaction
+     * @param confirmMoneyTransactionWithUserAccountDTO used for the html template
+     * @param model used for the html template
+     * @return Home.html or UserTransfer.html if an error is caught
+     */
     @PostMapping("/UserTransferConfirmation")
     public String submitUserTransferConfirmation(@ModelAttribute("confirmMoneyTransactionWithUserAccountDTO")ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO,
                                                  Model model){
@@ -110,6 +154,11 @@ public class MainController {
         return "Home";
     }
 
+    /**
+     * Get Bank Transfer page
+     * @param model used for the html template
+     * @return BankTransfer.html
+     */
     @GetMapping("/BankTransfer")
     public String getBankTransfer(Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
@@ -119,6 +168,12 @@ public class MainController {
         return "BankTransfer";
     }
 
+    /**
+     * Post request to confirm a Bank transaction
+     * @param confirmMoneyTransactionWithBankAccountDTO used for the html template
+     * @param model used for the html template
+     * @return BankTransferConfirmation.html
+     */
     @PostMapping("/BankTransfer")
     public String submitBankTransfer(@ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
                                      Model model){
@@ -133,6 +188,12 @@ public class MainController {
         return "BankTransferConfirmation";
     }
 
+    /**
+     * Post request to add a new Bank transaction
+     * @param confirmMoneyTransactionWithBankAccountDTO used for the html template
+     * @param model used for the html template
+     * @return Home.html or BankTransfer.html if an error is caught
+     */
     @PostMapping("/BankTransferConfirmation")
     public String submitBankTransferConfirmation(@ModelAttribute("confirmMoneyTransactionWithBankAccountDTO")ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO,
                                                  Model model){
@@ -151,6 +212,11 @@ public class MainController {
         return "Home";
     }
 
+    /**
+     * Get Friend list page
+     * @param model used for the html template
+     * @return FriendList.html
+     */
     @GetMapping("/FriendList")
     public String getFriendListPage(Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
@@ -160,6 +226,12 @@ public class MainController {
         return "FriendList";
     }
 
+    /**
+     * Post request to add a new friend
+     * @param addFriendDTO used for the html template
+     * @param model used for the html template
+     * @return FriendList.html
+     */
     @PostMapping("/FriendList")
     public String submitFriendListPage(@ModelAttribute("addFriendDTO") AddFriendDTO addFriendDTO, Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
@@ -175,6 +247,11 @@ public class MainController {
         return "FriendList";
     }
 
+    /**
+     * Get Bank list page
+     * @param model used for the html template
+     * @return BankList.html
+     */
     @GetMapping("/BankList")
     public String getBankListPagePage(Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
@@ -184,6 +261,12 @@ public class MainController {
         return "BankList";
     }
 
+    /**
+     * Post request to add a new bank
+     * @param addBankDTO used for the html template
+     * @param model used for the html template
+     * @return BankList.html
+     */
     @PostMapping("/BankList")
     public String submitBankListPage(@ModelAttribute("addBankDTO") AddBankDTO addBankDTO, Model model){
         UserAccount userAccount = userAccountService.findUserAccountByAuthentication();
