@@ -11,6 +11,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * MoneyTransaction service class
+ */
 @Service
 public class MoneyTransactionService {
 
@@ -19,10 +22,20 @@ public class MoneyTransactionService {
 
     private static final double TAX_NUMBER = 0.5;
 
+    /**
+     * find a tax amount by the amount
+     * @param amount is the amount
+     * @return a double for the result
+     */
     public double findTaxAmount(double amount){
         return userAccountService.roundedAmount((amount*TAX_NUMBER)/100);
     }
 
+    /**
+     * fuze a list of user transaction and bank transaction into one transaction list
+     * @param id is the user account id to get the list
+     * @return a list of MoneyTransactionDTO
+     */
     public List<MoneyTransactionDTO> getMoneyTransactionListByUserAccountId(long id){
         List<MoneyTransactionDTO> moneyTransactionDTOList = new ArrayList<>();
 
@@ -36,6 +49,11 @@ public class MoneyTransactionService {
         return moneyTransactionDTOList;
     }
 
+    /**
+     * map a list of bank transaction into a list of transaction
+     * @param moneyTransactionWithBankAccountList is the list of bank transaction
+     * @return a list of MoneyTransactionDTO
+     */
     public List<MoneyTransactionDTO> mapToMoneyTransaction(List<MoneyTransactionWithBankAccount> moneyTransactionWithBankAccountList) {
         return moneyTransactionWithBankAccountList.stream()
                 .map(moneyTransactionWithBankAccount -> new MoneyTransactionDTO(
@@ -53,6 +71,12 @@ public class MoneyTransactionService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * map a list of user transaction into a list of transaction
+     * @param id is the user account id
+     * @param moneyTransactionWithUserAccountList is the list of user transaction
+     * @return a list of MoneyTransactionDTO
+     */
     public List<MoneyTransactionDTO> mapToMoneyTransaction(long id, List<MoneyTransactionWithUserAccount> moneyTransactionWithUserAccountList){
         return moneyTransactionWithUserAccountList.stream()
                 .map(moneyTransactionWithUserAccount -> new MoneyTransactionDTO(

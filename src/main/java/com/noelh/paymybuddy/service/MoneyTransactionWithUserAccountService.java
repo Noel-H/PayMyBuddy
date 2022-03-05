@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Money transaction with user account service class
+ */
 @Service
 public class MoneyTransactionWithUserAccountService {
 
@@ -19,6 +22,13 @@ public class MoneyTransactionWithUserAccountService {
     @Autowired
     private UserAccountService userAccountService;
 
+    /**
+     * Add a new money transaction with user account
+     * @param id is the user account id
+     * @param confirmMoneyTransactionWithUserAccountDTO is the info of the transaction
+     * @throws NotEnoughMoneyException if the user lack money for the transaction
+     * @throws UserAccountNotFoundException if the target user don't exist in the database
+     */
     public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) throws NotEnoughMoneyException, UserAccountNotFoundException {
         if (userAccountService.getUserAccount(id).getBalance()<confirmMoneyTransactionWithUserAccountDTO.getTotalAmount()){
             throw new NotEnoughMoneyException("Not enough money in your account");
