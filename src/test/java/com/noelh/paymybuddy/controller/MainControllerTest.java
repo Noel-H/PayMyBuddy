@@ -263,34 +263,6 @@ class MainControllerTest {
     }
 
     @Test
-    void submitFriendListPageShouldThrowUserAccountNotFoundException() throws Exception {
-        UserAccount userAccount = new UserAccount();
-        userAccount.setId(1L);
-        when(userAccountService.findUserAccountByAuthentication()).thenReturn(userAccount);
-
-        doThrow(new UserAccountNotFoundException()).when(userAccountService).addFriendByUserAccountId(anyLong(),anyString());
-
-        mockMvc.perform(post("/FriendList"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("FriendList"))
-                .andExpect(MockMvcResultMatchers.model().attribute("userAccount", userAccount));
-    }
-
-    @Test
-    void submitFriendListPageShouldThrowLoginMailAlreadyAddedException() throws Exception {
-        UserAccount userAccount = new UserAccount();
-        userAccount.setId(1L);
-        when(userAccountService.findUserAccountByAuthentication()).thenReturn(userAccount);
-
-        doThrow(new LoginMailAlreadyAddedException()).when(userAccountService).addFriendByUserAccountId(anyLong(),anyString());
-
-        mockMvc.perform(post("/FriendList"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("FriendList"))
-                .andExpect(MockMvcResultMatchers.model().attribute("userAccount", userAccount));
-    }
-
-    @Test
     void getBankListPagePageShouldReturnOk() throws Exception {
         UserAccount userAccount = new UserAccount();
         userAccount.setId(1L);
@@ -310,21 +282,6 @@ class MainControllerTest {
         when(userAccountService.findUserAccountByAuthentication()).thenReturn(userAccount);
 
         doNothing().when(userAccountService).addBankAccountByUserAccountId(anyLong(),anyString());
-
-        mockMvc.perform(post("/BankList"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("BankList"))
-                .andExpect(MockMvcResultMatchers.model().attribute("addBankDTO", new AddBankDTO()))
-                .andExpect(MockMvcResultMatchers.model().attribute("userAccount", userAccount));
-    }
-
-    @Test
-    void submitBankListPageShouldThrowBankAccountAlreadyAddedException() throws Exception {
-        UserAccount userAccount = new UserAccount();
-        userAccount.setId(1L);
-        when(userAccountService.findUserAccountByAuthentication()).thenReturn(userAccount);
-
-        doThrow(new BankAccountAlreadyAddedException()).when(userAccountService).addBankAccountByUserAccountId(anyLong(),anyString());
 
         mockMvc.perform(post("/BankList"))
                 .andExpect(status().isOk())
