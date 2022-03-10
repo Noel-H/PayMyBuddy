@@ -101,6 +101,8 @@
                 <configuration>
                     <excludes>
                         <exclude>com/noelh/paymybuddy/dto/*.class</exclude>
+                        <exclude>com/noelh/paymybuddy/model/*.class</exclude>
+                        <exclude>com/noelh/paymybuddy/customexception/*.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
