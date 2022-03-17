@@ -210,18 +210,6 @@ class UserAccountServiceTest {
         verify(userAccountRepository,times(1)).save(userAccount2);
     }
 
-//    @Test
-//    void addWithdrawMoneyTransactionWithBank() {
-//    }
-//
-//    @Test
-//    void addDepositMoneyTransactionWithBank() {
-//    }
-//
-//    @Test
-//    void findUserAccountByAuthentication() {
-//    }
-
     @Test
     void roundedAmount() {
         //Given
