@@ -169,4 +169,4 @@ CREATE TABLE `user_account_money_transaction_with_user_account_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-19 12:59:38
+-- Dump completed on 2022-03-19 14:10:54
