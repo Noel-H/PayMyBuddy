@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableJpaRepositories(enableDefaultTransactions = false)
 public class PayMyBuddyApplication {
 
     /**
