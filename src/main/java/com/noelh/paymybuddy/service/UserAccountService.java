@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
@@ -49,6 +50,7 @@ public class UserAccountService {
      * @param signUpDTO is the info for the new user account
      * @throws LoginMailAlreadyExistException if the login mail already exist in the database
      */
+    @Transactional
     public void addUserAccountByMailAndPassword(SignUpDTO signUpDTO) throws LoginMailAlreadyExistException {
         if(userAccountRepository.existsUserAccountByLoginMail(signUpDTO.getLoginMail())){
             throw new LoginMailAlreadyExistException("The login "+signUpDTO.getLoginMail()+" is already taken");
@@ -73,6 +75,7 @@ public class UserAccountService {
      * @throws BankAccountAlreadyAddedException if the bank already exist in the user list
      * @throws BankAccountAlreadyUsedException if the bank is already used by a user
      */
+    @Transactional
     public void addBankAccountByUserAccountId(Long userAccountId, String iban) throws BankAccountAlreadyAddedException, BankAccountAlreadyUsedException {
         if (getUserAccount(userAccountId).getBankAccountList().contains(bankAccountService.getBankAccountByIban(iban))){
             throw new BankAccountAlreadyAddedException("The Bank Account "+iban+" is already added");
@@ -91,6 +94,7 @@ public class UserAccountService {
      * @throws UserAccountNotFoundException if the login mail don't exist in the database
      * @throws LoginMailAlreadyAddedException if the login mail is already added in the user friend list
      */
+    @Transactional
     public void addFriendByUserAccountId(Long userAccountId, String loginMail) throws UserAccountNotFoundException, LoginMailAlreadyAddedException {
         if (!userAccountRepository.existsUserAccountByLoginMail(loginMail)){
             throw new UserAccountNotFoundException("The login/Mail "+loginMail+" don't exist");
@@ -119,6 +123,7 @@ public class UserAccountService {
      * @param moneyReceive is the money receive
      * @param moneyTransactionWithUserAccount is the info of the transaction
      */
+    @Transactional
     public void addMoneyTransactionWithUser(UserAccount userAccount1,
                                             double moneySend,
                                             UserAccount userAccount2,
@@ -126,9 +131,9 @@ public class UserAccountService {
                                             MoneyTransactionWithUserAccount moneyTransactionWithUserAccount) {
         userAccount1.getMoneyTransactionWithUserAccountList().add(moneyTransactionWithUserAccount);
         userAccount1.setBalance(roundedAmount(userAccount1.getBalance()-moneySend));
+        userAccountRepository.save(userAccount1);
         userAccount2.getMoneyTransactionWithUserAccountList().add(moneyTransactionWithUserAccount);
         userAccount2.setBalance(roundedAmount(userAccount2.getBalance()+moneyReceive));
-        userAccountRepository.save(userAccount1);
         userAccountRepository.save(userAccount2);
     }
 

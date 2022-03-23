@@ -7,6 +7,7 @@ import com.noelh.paymybuddy.model.MoneyTransactionWithBankAccount;
 import com.noelh.paymybuddy.repository.MoneyTransactionWithBankAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +33,7 @@ public class MoneyTransactionWithBankAccountService {
      * @throws BankNotFoundInBankAccountListException if the bank don't exist in the bank account list of the user
      * @throws NotEnoughMoneyException if the user lack money for the transaction
      */
+    @Transactional
     public void addMoneyTransactionWithBank(Long id, ConfirmMoneyTransactionWithBankAccountDTO confirmMoneyTransactionWithBankAccountDTO) throws BankNotFoundInBankAccountListException, NotEnoughMoneyException {
         if (confirmMoneyTransactionWithBankAccountDTO.isWithdraw()){
             addWithdrawMoneyTransaction(id,confirmMoneyTransactionWithBankAccountDTO);

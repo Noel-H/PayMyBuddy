@@ -7,6 +7,7 @@ import com.noelh.paymybuddy.model.MoneyTransactionWithUserAccount;
 import com.noelh.paymybuddy.repository.MoneyTransactionWithUserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ public class MoneyTransactionWithUserAccountService {
      * @throws NotEnoughMoneyException if the user lack money for the transaction
      * @throws UserAccountNotFoundException if the target user don't exist in the database
      */
+    @Transactional
     public void addMoneyTransactionWithUserAccount(Long id, ConfirmMoneyTransactionWithUserAccountDTO confirmMoneyTransactionWithUserAccountDTO) throws NotEnoughMoneyException, UserAccountNotFoundException {
         if (userAccountService.getUserAccount(id).getBalance()<confirmMoneyTransactionWithUserAccountDTO.getTotalAmount()){
             throw new NotEnoughMoneyException("Not enough money in your account");
